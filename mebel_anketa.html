@@ -1258,102 +1258,38 @@ ${qoshimcha ? '\n📝 *Qo\'shimcha:* ' + qoshimcha : ''}
       const d1 = await res1.json();
       if (!d1.ok) throw new Error('Admin xabari yuborilmadi');
 
-      // 2. Claude AI dan taxminiy narx olish
+      // 2. Apps Script orqali AI narx hisoblash va mijozga yuborish
       btn.textContent = '🤖 Narx hisoblanmoqda...';
-      const aiPrompt = `Sen Toshkent shahridagi professional mebel ustasisisan. Quyidagi buyurtma ma'lumotlariga qarab mijozga O'zbek tilida qisqa va aniq taxminiy narx bilan javob ber. Faqat narx va qisqa izoh yoz, boshqa narsa yozma.
+      const aiPrompt = 'Sen Toshkent shahridagi professional mebel ustasisisan. Quyidagi buyurtmaga O\'zbek tilida taxminiy narx ber:\n' +
+        '- Ko\'rpus: ' + (selections['korpus'] || '—') + '\n' +
+        '- Fasad: ' + (selections['fasad'] || '—') + '\n' +
+        '- Stoleshnitsa: ' + (selections['stol'] || '—') + '\n' +
+        '- Furnitura: ' + (selections['furnitura'] || '—') + '\n' +
+        '- Bo\'yoq: ' + (selections['boyoq'] || '—') + '\n' +
+        '- Material: ' + (selections['material'] || '—') + '\n' +
+        '- O\'lchamlar: ' + uzunlik + 'x' + chuqurlik + 'x' + balandlik + ' sm\n' +
+        '- Budjet: ' + budjet + '\n' +
+        '- Shakl: ' + shakl + '\n\n' +
+        'Javob formati:\n' +
+        '🪑 Taxminiy narx: [so\'mda]\n' +
+        '📋 Izoh: [qisqa]\n' +
+        '⏰ Muddat: [kun]\n' +
+        '📞 Aniq narx: +998 91 135 44 66';
 
-Buyurtma:
-- Ko'rpus: ${selections['korpus'] || '—'}
-- Fasad: ${selections['fasad'] || '—'}  
-- Stoleshnitsa: ${selections['stol'] || '—'}
-- Furnitura: ${selections['furnitura'] || '—'}
-- Bo'yoq: ${selections['boyoq'] || '—'}
-- Material (chexol): ${selections['material'] || '—'}
-- Xona o'lchamlari: uzunlik ${uzunlik}sm, chuqurlik ${chuqurlik}sm, balandlik ${balandlik}sm
-- Budjet darajasi: ${budjet}
-- Mebel shakli: ${shakl}
+      const tgUsername = tg.value.trim().replace('@', '').trim();
 
-Javob formati (aynan shu tartibda yoz):
-🪑 Taxminiy narx: [narx oralig'i so'mda]
-📋 Qisqa izoh: [1-2 jumlada nima kiritilgani va sifati haqida]
-⏰ Taxminiy muddati: [necha kun]
-📞 Aniq narx uchun: +998 91 135 44 66`;
-
-      const OPENROUTER_KEY = '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';
-      const aiRes = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+      const scriptRes = await fetch('https://script.google.com/macros/s/AKfycbwFxn2q8FYVVASIXJkobkAekQcA-AsZWHrvEFeNP11jVF3u5mFtJ4yPM06i41BKmT6u/exec', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${OPENROUTER_KEY}`,
-          'HTTP-Referer': 'https://yakubovibrohim.github.io',
-          'X-Title': 'MBI Mebel Anketa'
-        },
+        headers: { 'Content-Type': 'text/plain' },
         body: JSON.stringify({
-          model: 'meta-llama/llama-3.3-8b-instruct:free',
-          messages: [{ role: 'user', content: aiPrompt }],
-          max_tokens: 400
+          type: 'narx',
+          aiPrompt: aiPrompt,
+          tgUsername: tgUsername,
+          mijozIsm: ism.value.trim(),
+          mijozTel: tel.value.trim(),
+          adminChatId: CHAT_ID
         })
       });
-      const aiData = await aiRes.json();
-      const aiText = aiData.choices?.[0]?.message?.content || 'Narxni hisoblashda xatolik yuz berdi.';
-
-      // 3. Mijozga Telegram orqali narx yuborish
-      const tgUsername = tg.value.trim().replace('@', '').trim();
-      
-      // getUpdates dan barcha xabarlarni olish (ko'proq limit bilan)
-      const getChatRes = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/getUpdates?limit=100&allowed_updates=["message"]`);
-      const getChatData = await getChatRes.json();
-      
-      // Barcha update lardan mijoz chat ID ni topish
-      let mijozChatId = null;
-      if (getChatData.ok && getChatData.result) {
-        for (const update of getChatData.result.reverse()) {
-          const from = update.message?.from;
-          const chat = update.message?.chat;
-          if (
-            (from?.username?.toLowerCase() === tgUsername.toLowerCase()) ||
-            (chat?.username?.toLowerCase() === tgUsername.toLowerCase())
-          ) {
-            mijozChatId = chat?.id || from?.id;
-            break;
-          }
-        }
-      }
-
-      const mijozMsg = `Assalomu alaykum, ${ism.value.trim()}! 👋
-
-Mebel buyurtmangiz uchun rahmat! 🪑
-
-${aiText}
-
-_Bu taxminiy narx. Aniq hisob-kitob uchun ustamiz siz bilan bog'lanadi._
-📞 +998 91 135 44 66`;
-
-      if (mijozChatId) {
-        await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ chat_id: mijozChatId, text: mijozMsg, parse_mode: 'Markdown' })
-        });
-      } else {
-        // Mijoz bot bilan muloqot qilmagan — sizga narx va eslatma yuborish
-        const eslatmaMsg = `⚠️ *@${tgUsername}* hali bot bilan muloqot qilmagan!
-
-Quyidagi taxminiy narxni unga *qo'lda* yuboring:
-
-${aiText}
-
-📞 Yoki siz bog'laning: ${tel.value.trim()}`;
-        await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ 
-            chat_id: CHAT_ID, 
-            text: eslatmaMsg, 
-            parse_mode: 'Markdown' 
-          })
-        });
-      }
 
       document.getElementById('modal').classList.add('show');
     } catch(e) {
