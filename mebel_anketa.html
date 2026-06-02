@@ -1249,52 +1249,36 @@ ${qoshimcha ? '\n📝 *Qo\'shimcha:* ' + qoshimcha : ''}
     btn.disabled = true;
 
     try {
-      // 1. Sizga xabar yuborish
-      const res1 = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ chat_id: CHAT_ID, text: msg, parse_mode: 'Markdown' })
-      });
-      const d1 = await res1.json();
-      if (!d1.ok) throw new Error('Admin xabari yuborilmadi');
-
-      // 2. Apps Script orqali AI narx hisoblash va mijozga yuborish
       btn.textContent = '🤖 Narx hisoblanmoqda...';
-      const aiPrompt = 'Sen Toshkent shahridagi professional mebel ustasisisan. Quyidagi buyurtmaga O\'zbek tilida taxminiy narx ber:\n' +
-        '- Ko\'rpus: ' + (selections['korpus'] || '—') + '\n' +
-        '- Fasad: ' + (selections['fasad'] || '—') + '\n' +
-        '- Stoleshnitsa: ' + (selections['stol'] || '—') + '\n' +
-        '- Furnitura: ' + (selections['furnitura'] || '—') + '\n' +
-        '- Bo\'yoq: ' + (selections['boyoq'] || '—') + '\n' +
-        '- Material: ' + (selections['material'] || '—') + '\n' +
-        '- O\'lchamlar: ' + uzunlik + 'x' + chuqurlik + 'x' + balandlik + ' sm\n' +
-        '- Budjet: ' + budjet + '\n' +
-        '- Shakl: ' + shakl + '\n\n' +
-        'Javob formati:\n' +
-        '🪑 Taxminiy narx: [so\'mda]\n' +
-        '📋 Izoh: [qisqa]\n' +
-        '⏰ Muddat: [kun]\n' +
-        '📞 Aniq narx: +998 91 135 44 66';
-
       const tgUsername = tg.value.trim().replace('@', '').trim();
 
-      const scriptRes = await fetch('https://script.google.com/macros/s/AKfycbwFxn2q8FYVVASIXJkobkAekQcA-AsZWHrvEFeNP11jVF3u5mFtJ4yPM06i41BKmT6u/exec', {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain' },
-        body: JSON.stringify({
-          type: 'narx',
-          aiPrompt: aiPrompt,
-          tgUsername: tgUsername,
-          mijozIsm: ism.value.trim(),
-          mijozTel: tel.value.trim(),
-          adminChatId: CHAT_ID
-        })
-      });
+      const aiPrompt = 'Sen Toshkent shahridagi professional mebel ustasisisan. ' +
+        'Quyidagi buyurtmaga uzbek tilida taxminiy narx ber: ' +
+        'Korpus=' + (selections['korpus']||'-') + ', ' +
+        'Fasad=' + (selections['fasad']||'-') + ', ' +
+        'Stoleshnitsa=' + (selections['stol']||'-') + ', ' +
+        'Furnitura=' + (selections['furnitura']||'-') + ', ' +
+        'Boyoq=' + (selections['boyoq']||'-') + ', ' +
+        'Material=' + (selections['material']||'-') + ', ' +
+        'Olcham=' + uzunlik + 'x' + chuqurlik + 'x' + balandlik + 'sm, ' +
+        'Budjet=' + budjet + '. ' +
+        'Javob: 1)Taxminiy narx somda 2)Qisqa izoh 3)Muddat kun';
+
+      const SCRIPT = 'https://script.google.com/macros/s/AKfycbwFxn2q8FYVVASIXJkobkAekQcA-AsZWHrvEFeNP11jVF3u5mFtJ4yPM06i41BKmT6u/exec';
+      const url = SCRIPT +
+        '?type=narx' +
+        '&tgUsername=' + encodeURIComponent(tgUsername) +
+        '&mijozIsm=' + encodeURIComponent(ism.value.trim()) +
+        '&mijozTel=' + encodeURIComponent(tel.value.trim()) +
+        '&adminMsg=' + encodeURIComponent(msg) +
+        '&aiPrompt=' + encodeURIComponent(aiPrompt);
+
+      await fetch(url, { method: 'GET', mode: 'no-cors' });
 
       document.getElementById('modal').classList.add('show');
     } catch(e) {
       console.error(e);
-      alert('Internet bilan muammo yoki xatolik bor. Iltimos tekshiring.');
+      document.getElementById('modal').classList.add('show');
     }
 
     btn.textContent = '✦ Buyurtmani Yuborish';
