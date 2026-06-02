@@ -1,0 +1,1348 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mebel Buyurtma Anketasi — MBI</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #B8860B;
+    --gold-light: #C9A84C;
+    --gold-bg: #FDF8EE;
+    --dark: #1A1612;
+    --cream: #2A2420;
+    --muted: #7A6A55;
+    --bg: #F7F4EF;
+    --bg2: #FFFFFF;
+    --bg3: #F0EBE1;
+    --border: rgba(180,150,80,0.2);
+    --border-hover: rgba(180,150,80,0.5);
+    --text: #1A1612;
+    --cheap: #2E7D32;
+    --premium: #8B4513;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  .header {
+    text-align: center;
+    padding: 60px 20px 40px;
+    position: relative;
+    background: linear-gradient(160deg, #1A1612 0%, #2e2318 100%);
+    color: #F5EFE3;
+  }
+  .header::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 1px;
+    height: 40px;
+    background: linear-gradient(to bottom, transparent, var(--gold-light));
+  }
+  .brand-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    border: 1px solid rgba(201,168,76,0.4);
+    padding: 6px 18px;
+    border-radius: 40px;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gold-light);
+    margin-bottom: 24px;
+  }
+  .brand-badge span { width: 6px; height: 6px; border-radius: 50%; background: var(--gold-light); }
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(32px, 6vw, 64px);
+    font-weight: 900;
+    letter-spacing: 8px;
+    text-transform: uppercase;
+    line-height: 1.1;
+    color: #F5EFE3;
+  }
+  h1 em {
+    font-style: normal;
+    color: var(--gold-light);
+  }
+  .subtitle {
+    margin-top: 12px;
+    font-size: 13px;
+    letter-spacing: 2px;
+    color: rgba(245,239,227,0.5);
+    text-transform: uppercase;
+  }
+  .gold-line {
+    width: 80px; height: 1px;
+    background: linear-gradient(to right, transparent, var(--gold-light), transparent);
+    margin: 24px auto 0;
+  }
+
+  /* FORM CONTAINER */
+  .form-wrap {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 0 20px 80px;
+  }
+
+  /* XONA O'LCHAMLARI + SHAKL */
+  .room-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 40px;
+  }
+  @media (max-width: 600px) { .room-section { grid-template-columns: 1fr; } }
+
+  .card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px;
+    transition: border-color 0.3s;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+  }
+  .card:hover { border-color: var(--border-hover); }
+  .card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 16px;
+    color: var(--gold);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .card-title::before {
+    content: '';
+    width: 24px; height: 1px;
+    background: var(--gold);
+    flex-shrink: 0;
+  }
+
+  .dims { display: flex; flex-direction: column; gap: 14px; }
+  .dim-row { display: flex; align-items: center; gap: 12px; }
+  .dim-row label { font-size: 12px; color: var(--muted); width: 80px; flex-shrink: 0; }
+  .dim-row input {
+    flex: 1;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 14px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .dim-row input:focus { border-color: var(--gold); }
+  .dim-unit { font-size: 11px; color: var(--muted); }
+
+  /* SHAKL */
+  .shakl-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+  .shakl-opt { position: relative; }
+  .shakl-opt input { position: absolute; opacity: 0; width: 0; height: 0; }
+  .shakl-opt label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(201,168,76,0.2);
+    border-radius: 10px;
+    padding: 14px 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .shakl-opt label svg { width: 36px; height: 28px; fill: none; stroke: var(--muted); stroke-width: 2; transition: stroke 0.2s; }
+  .shakl-opt label span { font-size: 10px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; }
+  .shakl-opt input:checked + label {
+    border-color: var(--gold);
+    background: rgba(201,168,76,0.1);
+  }
+  .shakl-opt input:checked + label svg { stroke: var(--gold); }
+  .shakl-opt input:checked + label span { color: var(--gold); }
+
+  /* MATERIAL SECTIONS */
+  .section {
+    margin-bottom: 28px;
+  }
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+  .section-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 32px;
+    color: rgba(201,168,76,0.2);
+    line-height: 1;
+  }
+  .section-info h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    color: var(--text);
+  }
+  .section-info p {
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+
+  .options-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .option-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 18px;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+    user-select: none;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+  }
+  .option-row:hover { border-color: var(--border-hover); background: var(--gold-bg); }
+  .option-row.selected {
+    border-color: var(--gold);
+    background: var(--gold-bg);
+    box-shadow: 0 2px 12px rgba(184,134,11,0.12);
+  }
+  .opt-left { display: flex; flex-direction: column; gap: 3px; }
+  .opt-name { font-size: 14px; font-weight: 500; color: var(--text); display: flex; align-items: center; gap: 8px; }
+  .opt-desc { font-size: 12px; color: var(--muted); line-height: 1.4; }
+  .price-badge {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 20px;
+    white-space: nowrap;
+  }
+  .price-arzon { background: rgba(46,125,50,0.1); color: #2E7D32; border: 1px solid rgba(46,125,50,0.25); }
+  .price-ortacha { background: rgba(184,134,11,0.1); color: #8B6914; border: 1px solid rgba(184,134,11,0.3); }
+  .price-qimmat { background: rgba(139,69,19,0.1); color: #8B4513; border: 1px solid rgba(139,69,19,0.25); }
+
+  .checkmark {
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+  }
+  .option-row.selected .checkmark {
+    background: var(--gold);
+    border-color: var(--gold);
+  }
+  .checkmark::after {
+    content: '';
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: white;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .option-row.selected .checkmark::after { opacity: 1; }
+
+  /* SHAKL */
+  .shakl-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+  .shakl-opt { position: relative; }
+  .shakl-opt input { position: absolute; opacity: 0; width: 0; height: 0; }
+  .shakl-opt label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    flex-direction: column;
+    gap: 6px;
+    background: var(--bg3);
+  }
+  .shakl-opt label svg { width: 36px; height: 28px; fill: none; stroke: var(--muted); stroke-width: 2; transition: stroke 0.2s; }
+  .shakl-opt label span { font-size: 10px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; }
+  .shakl-opt input:checked + label {
+    border-color: var(--gold);
+    background: var(--gold-bg);
+  }
+  .shakl-opt input:checked + label svg { stroke: var(--gold); }
+  .shakl-opt input:checked + label span { color: var(--gold); }
+
+  /* MATERIAL SECTIONS */
+  .section { margin-bottom: 28px; }
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+  .section-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 32px;
+    color: rgba(184,134,11,0.2);
+    line-height: 1;
+  }
+  .section-info h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    color: var(--text);
+  }
+  .section-info p {
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+  .options-grid { display: flex; flex-direction: column; gap: 8px; }
+
+  /* MIJOZ MA'LUMOTLARI */
+  .client-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 32px;
+    margin-bottom: 32px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+  }
+  .client-card .card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    color: var(--gold);
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .client-card .card-title::before {
+    content: '';
+    width: 24px; height: 1px;
+    background: var(--gold);
+    flex-shrink: 0;
+  }
+  .client-fields { display: flex; flex-direction: column; gap: 16px; }
+  .client-field { display: flex; flex-direction: column; gap: 6px; }
+  .client-field label {
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 600;
+  }
+  .client-field label span { color: #C0392B; margin-left: 2px; }
+  .client-field input {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 13px 16px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+    width: 100%;
+  }
+  .client-field input:focus { border-color: var(--gold); background: white; }
+  .client-field input::placeholder { color: #BDB0A0; }
+  .client-field input.error { border-color: #E74C3C; background: #FFF5F5; }
+
+  /* IZOH */
+  .izoh-field { margin-top: 10px; }
+  .izoh-field input {
+    width: 100%;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 16px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .izoh-field input::placeholder { color: #BDB0A0; }
+  .izoh-field input:focus { border-color: var(--gold); }
+  .izoh-label { font-size: 11px; color: var(--muted); letter-spacing: 1px; margin-bottom: 6px; text-transform: uppercase; font-weight: 600; }
+
+  /* BUDGET */
+  .budget-section { margin: 40px 0; }
+  .budget-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    color: var(--text);
+    margin-bottom: 16px;
+    text-align: center;
+  }
+  .budget-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .budget-row { grid-template-columns: 1fr; justify-items: center; text-align: center; padding: 20px 16px; }
+  .budget-row .opt-name { justify-content: center; font-size: 15px; font-weight: 600; }
+  @media (max-width: 480px) { .budget-grid { grid-template-columns: 1fr; } }
+  .budget-opt { position: relative; }
+  .budget-opt input { position: absolute; opacity: 0; width: 0; height: 0; }
+  .budget-opt label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px 16px;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-align: center;
+    background: var(--bg2);
+    box-shadow: 0 1px 6px rgba(0,0,0,0.04);
+  }
+  .budget-opt label .b-icon { font-size: 28px; }
+  .budget-opt label .b-name { font-family: 'Playfair Display', serif; font-size: 16px; font-weight: 700; color: var(--text); }
+  .budget-opt label .b-desc { font-size: 11px; color: var(--muted); }
+  .budget-opt:nth-child(1) input:checked + label { border-color: #2E7D32; background: #F0FFF0; }
+  .budget-opt:nth-child(2) input:checked + label { border-color: var(--gold); background: var(--gold-bg); }
+  .budget-opt:nth-child(3) input:checked + label { border-color: #8B4513; background: #FFF8F0; }
+
+  /* QO'SHIMCHA */
+  .qoshimcha-section textarea {
+    width: 100%;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    resize: vertical;
+    min-height: 100px;
+    outline: none;
+    transition: border-color 0.2s;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+  }
+  .qoshimcha-section textarea:focus { border-color: var(--gold); }
+  .qoshimcha-section textarea::placeholder { color: #BDB0A0; }
+
+  /* DIVIDER */
+  .divider { border: none; border-top: 1px solid var(--border); margin: 32px 0; }
+
+  /* SUBMIT */
+  .submit-area { margin-top: 48px; text-align: center; }
+  .submit-btn {
+    background: linear-gradient(135deg, #B8860B, #C9A84C);
+    color: white;
+    border: none;
+    padding: 18px 60px;
+    border-radius: 50px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 8px 24px rgba(184,134,11,0.3);
+  }
+  .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(184,134,11,0.4); }
+  .submit-btn:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
+
+  /* CONTACT */
+  .contact-footer {
+    border-top: 1px solid var(--border);
+    margin-top: 48px;
+    padding-top: 32px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 24px;
+    align-items: center;
+  }
+  .contact-item { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); }
+  .contact-item a { color: var(--gold); text-decoration: none; font-weight: 500; }
+  .contact-item a:hover { color: var(--gold-light); }
+
+  /* MODAL */
+  .modal-bg {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+  }
+  .modal-bg.show { display: flex; }
+  .modal {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 48px 40px;
+    text-align: center;
+    max-width: 400px;
+    margin: 20px;
+    animation: popIn 0.4s cubic-bezier(.175,.885,.32,1.275);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+  }
+  @keyframes popIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+  .modal .icon { font-size: 56px; margin-bottom: 16px; }
+  .modal h2 { font-family: 'Playfair Display', serif; font-size: 24px; color: var(--gold); margin-bottom: 12px; }
+  .modal p { font-size: 14px; color: var(--muted); line-height: 1.6; }
+  .modal-close {
+    margin-top: 28px;
+    background: transparent;
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    padding: 12px 32px;
+    border-radius: 40px;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    transition: all 0.2s;
+  }
+  .modal-close:hover { background: var(--gold); color: white; }
+
+  /* IZOH INPUT */
+  .izoh-field {
+    margin-top: 10px;
+  }
+  .izoh-field input {
+    width: 100%;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(201,168,76,0.15);
+    border-radius: 8px;
+    padding: 12px 16px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .izoh-field input::placeholder { color: rgba(138,122,106,0.6); }
+  .izoh-field input:focus { border-color: rgba(201,168,76,0.4); }
+  .izoh-label { font-size: 11px; color: var(--muted); letter-spacing: 1px; margin-bottom: 6px; text-transform: uppercase; }
+
+  /* BUDGET */
+  .budget-section {
+    margin: 40px 0;
+  }
+  .budget-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    color: var(--text);
+    margin-bottom: 16px;
+    text-align: center;
+  }
+  .budget-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+  @media (max-width: 480px) { .budget-grid { grid-template-columns: 1fr; } }
+  .budget-opt { position: relative; }
+  .budget-opt input { position: absolute; opacity: 0; width: 0; height: 0; }
+  .budget-opt label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border: 1px solid rgba(201,168,76,0.15);
+    border-radius: 14px;
+    padding: 24px 16px;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-align: center;
+  }
+  .budget-opt label .b-icon { font-size: 28px; }
+  .budget-opt label .b-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 16px;
+    font-weight: 700;
+  }
+  .budget-opt label .b-desc { font-size: 11px; color: var(--muted); }
+  .budget-opt:nth-child(1) input:checked + label { border-color: #7BC47B; background: rgba(90,138,90,0.12); }
+  .budget-opt:nth-child(2) input:checked + label { border-color: var(--gold); background: rgba(201,168,76,0.1); }
+  .budget-opt:nth-child(3) input:checked + label { border-color: #D4895A; background: rgba(160,82,45,0.12); }
+
+  /* QO'SHIMCHA */
+  .qoshimcha-section textarea {
+    width: 100%;
+    background: var(--bg2);
+    border: 1px solid rgba(201,168,76,0.15);
+    border-radius: 12px;
+    padding: 18px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    resize: vertical;
+    min-height: 100px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .qoshimcha-section textarea:focus { border-color: rgba(201,168,76,0.4); }
+  .qoshimcha-section textarea::placeholder { color: rgba(138,122,106,0.5); }
+
+  /* SUBMIT */
+  .submit-area {
+    margin-top: 48px;
+    text-align: center;
+  }
+  .submit-btn {
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    color: var(--dark);
+    border: none;
+    padding: 18px 60px;
+    border-radius: 50px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 8px 32px rgba(201,168,76,0.25);
+  }
+  .submit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px rgba(201,168,76,0.4);
+  }
+  .submit-btn:active { transform: translateY(0); }
+
+  /* CONTACT FOOTER */
+  .contact-footer {
+    border-top: 1px solid rgba(201,168,76,0.1);
+    margin-top: 48px;
+    padding-top: 32px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 24px;
+    align-items: center;
+  }
+  .contact-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .contact-item a { color: var(--gold-light); text-decoration: none; }
+  .contact-item a:hover { color: var(--gold); }
+
+  /* SUCCESS MODAL */
+  .modal-bg {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+  }
+  .modal-bg.show { display: flex; }
+  .modal {
+    background: var(--bg2);
+    border: 1px solid rgba(201,168,76,0.3);
+    border-radius: 20px;
+    padding: 48px 40px;
+    text-align: center;
+    max-width: 400px;
+    margin: 20px;
+    animation: popIn 0.4s cubic-bezier(.175,.885,.32,1.275);
+  }
+  @keyframes popIn {
+    from { transform: scale(0.8); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+  .modal .icon { font-size: 56px; margin-bottom: 16px; }
+  .modal h2 { font-family: 'Playfair Display', serif; font-size: 24px; color: var(--gold); margin-bottom: 12px; }
+  .modal p { font-size: 14px; color: var(--muted); line-height: 1.6; }
+  .modal-close {
+    margin-top: 28px;
+    background: transparent;
+    border: 1px solid rgba(201,168,76,0.4);
+    color: var(--gold);
+    padding: 12px 32px;
+    border-radius: 40px;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    transition: all 0.2s;
+  }
+  .modal-close:hover { background: rgba(201,168,76,0.1); }
+
+  .divider {
+    border: none;
+    border-top: 1px solid rgba(201,168,76,0.08);
+    margin: 32px 0;
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="brand-badge"><span></span>Mebel By Ibrohim<span></span></div>
+  <h1>Mebel <em>Buyurtma</em><br>Anketasi</h1>
+  <p class="subtitle">Sifatli mebel — to'g'ri tanlov</p>
+  <div class="gold-line"></div>
+</div>
+
+<div class="form-wrap">
+
+  <!-- SANA -->
+  <div class="date-row">
+    <label>★ Sana</label>
+    <input type="date" id="sana" name="sana">
+  </div>
+
+  <!-- XONA O'LCHAMLARI + SHAKL -->
+  <div class="room-section">
+    <div class="card">
+      <div class="card-title">Xona O'lchamlari</div>
+      <div class="dims">
+        <div class="dim-row">
+          <label>Uzunligi</label>
+          <input type="number" placeholder="0" min="0" id="uzunlik">
+          <span class="dim-unit">sm</span>
+        </div>
+        <div class="dim-row">
+          <label>Chuqurligi</label>
+          <input type="number" placeholder="0" min="0" id="chuqurlik">
+          <span class="dim-unit">sm</span>
+        </div>
+        <div class="dim-row">
+          <label>Balandligi</label>
+          <input type="number" placeholder="0" min="0" id="balandlik">
+          <span class="dim-unit">sm</span>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Mebel Shakli</div>
+      <div class="shakl-grid">
+        <!-- L shakl -->
+        <div class="shakl-opt">
+          <input type="radio" name="shakl" id="sh1" value="L-shakl">
+          <label for="sh1">
+            <svg viewBox="0 0 50 40"><rect x="5" y="5" width="18" height="30" rx="2"/><rect x="5" y="25" width="40" height="10" rx="2"/></svg>
+            <span>L</span>
+          </label>
+        </div>
+        <!-- T shakl -->
+        <div class="shakl-opt">
+          <input type="radio" name="shakl" id="sh2" value="T-shakl">
+          <label for="sh2">
+            <svg viewBox="0 0 50 40"><rect x="5" y="5" width="40" height="10" rx="2"/><rect x="20" y="5" width="10" height="30" rx="2"/></svg>
+            <span>T</span>
+          </label>
+        </div>
+        <!-- To'g'ri -->
+        <div class="shakl-opt">
+          <input type="radio" name="shakl" id="sh3" value="Togri">
+          <label for="sh3">
+            <svg viewBox="0 0 50 40"><rect x="5" y="10" width="40" height="20" rx="2"/></svg>
+            <span>To'g'ri</span>
+          </label>
+        </div>
+        <!-- U shakl -->
+        <div class="shakl-opt">
+          <input type="radio" name="shakl" id="sh4" value="U-shakl">
+          <label for="sh4">
+            <svg viewBox="0 0 50 40"><rect x="5" y="5" width="12" height="30" rx="2"/><rect x="33" y="5" width="12" height="30" rx="2"/><rect x="5" y="28" width="40" height="9" rx="2"/></svg>
+            <span>U</span>
+          </label>
+        </div>
+        <!-- G shakl -->
+        <div class="shakl-opt">
+          <input type="radio" name="shakl" id="sh5" value="G-shakl">
+          <label for="sh5">
+            <svg viewBox="0 0 50 40"><rect x="5" y="5" width="18" height="30" rx="2"/><rect x="23" y="5" width="22" height="10" rx="2"/></svg>
+            <span>G</span>
+          </label>
+        </div>
+        <!-- Boshqa -->
+        <div class="shakl-opt">
+          <input type="radio" name="shakl" id="sh6" value="Boshqa">
+          <label for="sh6">
+            <svg viewBox="0 0 50 40"><circle cx="25" cy="20" r="14" stroke-dasharray="4 3"/></svg>
+            <span>Boshqa</span>
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 1. KO'RPUS -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">01</span>
+      <div class="section-info">
+        <h3>Ko'rpus</h3>
+        <p>Ichki qismi</p>
+      </div>
+    </div>
+    <div class="options-grid" id="korpus-opts">
+      <div class="option-row" data-group="korpus" data-value="LMDF" onclick="selectOpt(this)">
+        <div class="opt-left">
+          <span class="opt-name"><span class="checkmark"></span>LMDF</span>
+          <span class="opt-desc">Zichroq, og'irroq, namlikka biroz chidamliroq va vintlarni yaxshi ushlaydi</span>
+        </div>
+        <span class="price-badge price-ortacha">O'rtacha</span>
+      </div>
+      <div class="option-row" data-group="korpus" data-value="LDSP" onclick="selectOpt(this)">
+        <div class="opt-left">
+          <span class="opt-name"><span class="checkmark"></span>LDSP</span>
+          <span class="opt-desc">Yengil, rangi va teksturasi ko'p, namlikka umuman chidamsiz</span>
+        </div>
+        <span class="price-badge price-arzon">Arzon</span>
+      </div>
+      <div class="option-row" data-group="korpus" data-value="Fanera" onclick="selectOpt(this)">
+        <div class="opt-left">
+          <span class="opt-name"><span class="checkmark"></span>Fanera</span>
+          <span class="opt-desc">Juda mustahkam, namlikka chidamli, egilmaydi, deformatsiya bo'lmaydi</span>
+        </div>
+        <span class="price-badge price-qimmat">Qimmat</span>
+      </div>
+    </div>
+    <div class="izoh-field">
+      <div class="izoh-label">Qo'shimcha izoh</div>
+      <input type="text" placeholder="Qo'shimcha fikr yoki talablaringiz...">
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- 2. FASAD -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">02</span>
+      <div class="section-info">
+        <h3>Fasad</h3>
+        <p>Eshiklari</p>
+      </div>
+    </div>
+    <div class="options-grid">
+      <div class="option-row" data-group="fasad" data-value="LMDF" onclick="selectOpt(this)">
+        <div class="opt-left">
+          <span class="opt-name"><span class="checkmark"></span>LMDF</span>
+          <span class="opt-desc">Ko'rpus bilan bir xil qilish mumkin va kromka qilinadi</span>
+        </div>
+        <span class="price-badge price-arzon">Arzon</span>
+      </div>
+      <div class="option-row" data-group="fasad" data-value="Akril" onclick="selectOpt(this)">
+        <div class="opt-left">
+          <span class="opt-name"><span class="checkmark"></span>Akril</span>
+          <span class="opt-desc">Juda ko'p turlari mavjud, orqa qismi oq rangda va kromka qilinadi</span>
+        </div>
+        <span class="price-badge price-ortacha">O'rtacha</span>
+      </div>
+      <div class="option-row" data-group="fasad" data-value="Bo'yoqli" onclick="selectOpt(this)">
+        <div class="opt-left">
+          <span class="opt-name"><span class="checkmark"></span>Bo'yoqli</span>
+          <span class="opt-desc">Ya'ni krashenniy MDF — istalgan rangga bo'yaladi</span>
+        </div>
+        <span class="price-badge price-qimmat">Qimmat</span>
+      </div>
+      <div class="option-row" data-group="fasad" data-value="Shpon" onclick="selectOpt(this)">
+        <div class="opt-left">
+          <span class="opt-name"><span class="checkmark"></span>Shpon</span>
+          <span class="opt-desc">Tabiiy yog'och qoplama yopishtiriladi, bo'yaladi va premium ko'rinish beradi</span>
+        </div>
+        <span class="price-badge price-qimmat">Qimmat</span>
+      </div>
+    </div>
+    <div class="izoh-field">
+      <div class="izoh-label">Qo'shimcha izoh</div>
+      <input type="text" placeholder="Qo'shimcha fikr yoki talablaringiz...">
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- 3. STOLESHNITSA -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">03</span>
+      <div class="section-info">
+        <h3>Stoleshnitsa</h3>
+        <p>Ustki qismi</p>
+      </div>
+    </div>
+    <div class="options-grid">
+      <div class="option-row" data-group="stol" data-value="DSP" onclick="selectOpt(this)">
+        <div class="opt-left">
+          <span class="opt-name"><span class="checkmark"></span>DSP</span>
+          <span class="opt-desc">Juda ko'p turlari mavjud, biroz namlikka chidamli, issiqdan qo'rqmaydi</span>
+        </div>
+        <span class="price-badge price-arzon">Arzon</span>
+      </div>
+      <div class="option-row" data-group="stol" data-value="Suniy tosh" onclick="selectOpt(this)">
+        <div class="opt-left">
+          <span class="opt-name"><span class="checkmark"></span>Suniy tosh</span>
+          <span class="opt-desc">Juda ko'p turlari mavjud, issiqqa juda chidamli emas</span>
+        </div>
+        <span class="price-badge price-qimmat">Qimmat</span>
+      </div>
+      <div class="option-row" data-group="stol" data-value="Kvars" onclick="selectOpt(this)">
+        <div class="opt-left">
+          <span class="opt-name"><span class="checkmark"></span>Kvars</span>
+          <span class="opt-desc">Qattiq tosh, issiqqa ham tirnalishlarga ham chidamli</span>
+        </div>
+        <span class="price-badge price-qimmat">Qimmat</span>
+      </div>
+    </div>
+    <div class="izoh-field">
+      <div class="izoh-label">Qo'shimcha izoh</div>
+      <input type="text" placeholder="Qo'shimcha fikr yoki talablaringiz...">
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- 4. FURNITURA -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">04</span>
+      <div class="section-info">
+        <h3>Furnitura</h3>
+        <p>Mexanizmlar</p>
+      </div>
+    </div>
+    <div class="options-grid">
+      <div class="option-row" data-group="furnitura" data-value="Blum" onclick="selectOpt(this)">
+        <div class="opt-left">
+          <span class="opt-name"><span class="checkmark"></span>Blum</span>
+          <span class="opt-desc">Avstriya mahsuloti, 20 yil kafolat, PREMIUM sifat va yuqori aniqlik</span>
+        </div>
+        <span class="price-badge price-qimmat">Qimmat</span>
+      </div>
+      <div class="option-row" data-group="furnitura" data-value="Hettich" onclick="selectOpt(this)">
+        <div class="opt-left">
+          <span class="opt-name"><span class="checkmark"></span>Hettich</span>
+          <span class="opt-desc">Germaniya mahsuloti, 10 yil kafolat, PREMIUM sifat va yuqori aniqlik</span>
+        </div>
+        <span class="price-badge price-qimmat">Qimmat</span>
+      </div>
+      <div class="option-row" data-group="furnitura" data-value="GTV" onclick="selectOpt(this)">
+        <div class="opt-left">
+          <span class="opt-name"><span class="checkmark"></span>GTV</span>
+          <span class="opt-desc">Po'lsha mahsuloti, o'rta segment sifati, aniq o'lchamlar</span>
+        </div>
+        <span class="price-badge price-ortacha">O'rtacha</span>
+      </div>
+      <div class="option-row" data-group="furnitura" data-value="Xitoy" onclick="selectOpt(this)">
+        <div class="opt-left">
+          <span class="opt-name"><span class="checkmark"></span>Xitoy</span>
+          <span class="opt-desc">Kafolat yo'q</span>
+        </div>
+        <span class="price-badge price-arzon">Arzon</span>
+      </div>
+    </div>
+    <div class="izoh-field">
+      <div class="izoh-label">Qo'shimcha izoh</div>
+      <input type="text" placeholder="Qo'shimcha fikr yoki talablaringiz...">
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- 5. BO'YOQ -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">05</span>
+      <div class="section-info">
+        <h3>Bo'yoq</h3>
+        <p>Kraska</p>
+      </div>
+    </div>
+    <div class="options-grid">
+      <div class="option-row" data-group="boyoq" data-value="Betek" onclick="selectOpt(this)">
+        <div class="opt-left">
+          <span class="opt-name"><span class="checkmark"></span>Betek</span>
+          <span class="opt-desc">Turkiya mahsuloti, sifatli va rasmiy kafolat bor</span>
+        </div>
+        <span class="price-badge price-ortacha">O'rtacha</span>
+      </div>
+      <div class="option-row" data-group="boyoq" data-value="Genc" onclick="selectOpt(this)">
+        <div class="opt-left">
+          <span class="opt-name"><span class="checkmark"></span>Genc</span>
+          <span class="opt-desc">Turkiya mahsuloti, sifatli va rasmiy kafolat bor</span>
+        </div>
+        <span class="price-badge price-ortacha">O'rtacha</span>
+      </div>
+      <div class="option-row" data-group="boyoq" data-value="Sirca" onclick="selectOpt(this)">
+        <div class="opt-left">
+          <span class="opt-name"><span class="checkmark"></span>Sirca</span>
+          <span class="opt-desc">Italiya mahsuloti, PREMIUM sifat, rasmiy kafolat bor</span>
+        </div>
+        <span class="price-badge price-qimmat">Qimmat</span>
+      </div>
+      <div class="option-row" data-group="boyoq" data-value="AVTO" onclick="selectOpt(this)">
+        <div class="opt-left">
+          <span class="opt-name"><span class="checkmark"></span>AVTO</span>
+          <span class="opt-desc">Avtomobilniy kraska — juda yuqori sifat va PREMIUM</span>
+        </div>
+        <span class="price-badge price-qimmat">Qimmat</span>
+      </div>
+    </div>
+    <div class="izoh-field">
+      <div class="izoh-label">Qo'shimcha izoh</div>
+      <input type="text" placeholder="Qo'shimcha fikr yoki talablaringiz...">
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- 6. MATERIAL (CHEXOL) -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">06</span>
+      <div class="section-info">
+        <h3>Material</h3>
+        <p>Chexol</p>
+      </div>
+    </div>
+    <div class="options-grid">
+      <div class="option-row" data-group="material" data-value="Turkiya-standard" onclick="selectOpt(this)">
+        <div class="opt-left">
+          <span class="opt-name"><span class="checkmark"></span>Turkiya</span>
+          <span class="opt-desc">Turkiya mahsuloti, sifatli</span>
+        </div>
+        <span class="price-badge price-ortacha">O'rtacha</span>
+      </div>
+      <div class="option-row" data-group="material" data-value="Xitoy" onclick="selectOpt(this)">
+        <div class="opt-left">
+          <span class="opt-name"><span class="checkmark"></span>Xitoy</span>
+          <span class="opt-desc">Xitoy mahsuloti, sifat o'rtacha</span>
+        </div>
+        <span class="price-badge price-ortacha">O'rtacha</span>
+      </div>
+      <div class="option-row" data-group="material" data-value="Turkiya-premium" onclick="selectOpt(this)">
+        <div class="opt-left">
+          <span class="opt-name"><span class="checkmark"></span>Turkiya Premium</span>
+          <span class="opt-desc">Premium sifatli va dog'larga chidamli</span>
+        </div>
+        <span class="price-badge price-qimmat">Qimmat</span>
+      </div>
+    </div>
+    <div class="izoh-field">
+      <div class="izoh-label">Qo'shimcha izoh</div>
+      <input type="text" placeholder="Qo'shimcha fikr yoki talablaringiz...">
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- BUDJET DARAJASI -->
+  <div class="budget-section">
+    <p class="budget-title">Budjet Darajasi</p>
+    <div class="budget-grid">
+      <div class="option-row budget-row" data-group="budjet" data-value="Tejamkor" onclick="selectOpt(this)">
+        <div class="opt-left">
+          <span class="opt-name"><span class="checkmark"></span>💰 Tejamkor</span>
+          <span class="opt-desc">Arzon materiallar</span>
+        </div>
+      </div>
+      <div class="option-row budget-row" data-group="budjet" data-value="O'rta" onclick="selectOpt(this)">
+        <div class="opt-left">
+          <span class="opt-name"><span class="checkmark"></span>⚖️ O'rta</span>
+          <span class="opt-desc">Narx-sifat muvozanati</span>
+        </div>
+      </div>
+      <div class="option-row budget-row" data-group="budjet" data-value="Premium" onclick="selectOpt(this)">
+        <div class="opt-left">
+          <span class="opt-name"><span class="checkmark"></span>✨ Premium</span>
+          <span class="opt-desc">Eng yaxshi materiallar</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QO'SHIMCHA -->
+  <div class="qoshimcha-section">
+    <div class="izoh-label" style="margin-bottom:10px">Qo'shimcha</div>
+    <textarea placeholder="Boshqa fikr, xohish yoki savollaringiz..."></textarea>
+  </div>
+
+  <!-- MIJOZ MA'LUMOTLARI -->
+  <hr class="divider">
+  <div class="client-card">
+    <div class="card-title">Mijoz Ma'lumotlari</div>
+    <div class="client-fields">
+      <div class="client-field">
+        <label>Ism Familiya <span>*</span></label>
+        <input type="text" id="mijoz-ism" placeholder="Masalan: Abdullayev Jasur">
+      </div>
+      <div class="client-field">
+        <label>Telefon Raqam <span>*</span></label>
+        <input type="tel" id="mijoz-tel" placeholder="+998 90 000 00 00">
+      </div>
+      <div class="client-field">
+        <label>Manzil <span>*</span></label>
+        <input type="text" id="mijoz-manzil" placeholder="Shahar, tuman, ko'cha, uy raqami">
+      </div>
+      <div class="client-field">
+        <label>Telegram Username <span>*</span></label>
+        <input type="text" id="mijoz-tg" placeholder="@username (taxminiy narx shu yerga yuboriladi)">
+      </div>
+    </div>
+  </div>
+
+  <!-- SUBMIT -->
+  <div class="submit-area">
+    <button class="submit-btn" onclick="submitForm()">✦ Buyurtmani Yuborish</button>
+  </div>
+
+  <!-- CONTACT -->
+  <div class="contact-footer">
+    <div class="contact-item">📞 <a href="tel:+998911354466">+998 91 135 44 66</a></div>
+    <div class="contact-item">📞 <a href="tel:+998951904466">+998 95 190 44 66</a></div>
+    <div class="contact-item">✈️ <a href="https://t.me/MBI_mebel" target="_blank">@MBI_mebel</a></div>
+    <div class="contact-item">📸 <a href="https://instagram.com/mbi_mebel" target="_blank">@mbi_mebel</a></div>
+  </div>
+
+</div>
+
+<!-- SUCCESS MODAL -->
+<div class="modal-bg" id="modal">
+  <div class="modal">
+    <div class="icon">✅</div>
+    <h2>Buyurtma yuborildi!</h2>
+    <p>Anketangiz qabul qilindi. Taxminiy narx <strong>Telegram</strong> ga yuborildi.<br><br>
+    Agar xabar kelmasa — <strong>@mbi_mebel_bot</strong> ga <strong>/start</strong> bosing, keyin qayta yuboring.<br><br>
+    <strong style="color:var(--gold)">MEBEL BY IBROHIM</strong></p>
+    <button class="modal-close" onclick="closeModal()">Yopish</button>
+  </div>
+</div>
+
+<script>
+  const BOT_TOKEN = '8811277023:AAH_1iBPjb-dlmPDWc1vwMCPQEITzLuWDec';
+  const CHAT_ID   = '1487569442';
+
+  document.getElementById('sana').valueAsDate = new Date();
+
+  const selections = {};
+
+  function selectOpt(row) {
+    const group = row.dataset.group;
+    const alreadySelected = row.classList.contains("selected");
+    document.querySelectorAll(`.option-row[data-group="${group}"]`).forEach(r => r.classList.remove("selected"));
+    if (!alreadySelected) {
+      row.classList.add("selected");
+      selections[group] = row.dataset.value;
+    } else {
+      delete selections[group];
+    }
+  }
+
+  async function submitForm() {
+    // --- Validatsiya ---
+    const requiredGroups = ['korpus','fasad','stol','furnitura','budjet'];
+    const groupLabels = { korpus:"Ko'rpus", fasad:'Fasad', stol:'Stoleshnitsa', furnitura:'Furnitura', budjet:'Budjet darajasi' };
+    let missing = requiredGroups.filter(g => {
+      
+      return !selections[g];
+    }).map(g => groupLabels[g]);
+
+    const ism    = document.getElementById('mijoz-ism');
+    const tel    = document.getElementById('mijoz-tel');
+    const manzil = document.getElementById('mijoz-manzil');
+    const tg     = document.getElementById('mijoz-tg');
+    [ism, tel, manzil, tg].forEach(f => f.classList.remove('error'));
+    if (!ism.value.trim())    { ism.classList.add('error');    missing.push('Ism Familiya'); }
+    if (!tel.value.trim())    { tel.classList.add('error');    missing.push('Telefon raqam'); }
+    if (!manzil.value.trim()) { manzil.classList.add('error'); missing.push('Manzil'); }
+    if (!tg.value.trim())     { tg.classList.add('error');     missing.push('Telegram username'); }
+
+    if (missing.length > 0) {
+      alert('Iltimos quyidagilarni to\'ldiring:\n• ' + missing.join('\n• '));
+      return;
+    }
+
+    // --- Xabar matni ---
+    const sana     = document.getElementById('sana').value;
+    const uzunlik  = document.getElementById('uzunlik').value  || '—';
+    const chuqurlik= document.getElementById('chuqurlik').value|| '—';
+    const balandlik= document.getElementById('balandlik').value|| '—';
+    const shakl    = document.querySelector('input[name="shakl"]:checked')?.value || '—';
+    const budjet   = selections['budjet'] || '—';
+    const qoshimcha= document.querySelector('.qoshimcha-section textarea')?.value || '';
+
+    const msg = `
+🪑 *YANGI MEBEL BUYURTMASI*
+📅 Sana: ${sana}
+
+👤 *MIJOZ MA'LUMOTLARI*
+├ Ism: ${ism.value.trim()}
+├ Telefon: ${tel.value.trim()}
+├ Manzil: ${manzil.value.trim()}
+└ Telegram: ${tg.value.trim()}
+
+📐 *XONA O'LCHAMLARI*
+├ Uzunlik: ${uzunlik} sm
+├ Chuqurlik: ${chuqurlik} sm
+├ Balandlik: ${balandlik} sm
+└ Shakl: ${shakl}
+
+🔩 *MATERIAL TANLOVI*
+├ Ko'rpus: ${selections['korpus'] || '—'}
+├ Fasad: ${selections['fasad'] || '—'}
+├ Stoleshnitsa: ${selections['stol'] || '—'}
+├ Furnitura: ${selections['furnitura'] || '—'}
+├ Bo'yoq: ${selections['boyoq'] || '—'}
+└ Material: ${selections['material'] || '—'}
+
+💰 *Budjet:* ${budjet}
+${qoshimcha ? '\n📝 *Qo\'shimcha:* ' + qoshimcha : ''}
+    `.trim();
+
+    // --- Yuborish tugmasi ---
+    const btn = document.querySelector('.submit-btn');
+    btn.textContent = '⏳ Yuborilmoqda...';
+    btn.disabled = true;
+
+    try {
+      // 1. Sizga xabar yuborish
+      const res1 = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ chat_id: CHAT_ID, text: msg, parse_mode: 'Markdown' })
+      });
+      const d1 = await res1.json();
+      if (!d1.ok) throw new Error('Admin xabari yuborilmadi');
+
+      // 2. Claude AI dan taxminiy narx olish
+      btn.textContent = '🤖 Narx hisoblanmoqda...';
+      const aiPrompt = `Sen Toshkent shahridagi professional mebel ustasisisan. Quyidagi buyurtma ma'lumotlariga qarab mijozga O'zbek tilida qisqa va aniq taxminiy narx bilan javob ber. Faqat narx va qisqa izoh yoz, boshqa narsa yozma.
+
+Buyurtma:
+- Ko'rpus: ${selections['korpus'] || '—'}
+- Fasad: ${selections['fasad'] || '—'}  
+- Stoleshnitsa: ${selections['stol'] || '—'}
+- Furnitura: ${selections['furnitura'] || '—'}
+- Bo'yoq: ${selections['boyoq'] || '—'}
+- Material (chexol): ${selections['material'] || '—'}
+- Xona o'lchamlari: uzunlik ${uzunlik}sm, chuqurlik ${chuqurlik}sm, balandlik ${balandlik}sm
+- Budjet darajasi: ${budjet}
+- Mebel shakli: ${shakl}
+
+Javob formati (aynan shu tartibda yoz):
+🪑 Taxminiy narx: [narx oralig'i so'mda]
+📋 Qisqa izoh: [1-2 jumlada nima kiritilgani va sifati haqida]
+⏰ Taxminiy muddati: [necha kun]
+📞 Aniq narx uchun: +998 91 135 44 66`;
+
+      const aiRes = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-20250514',
+          max_tokens: 400,
+          messages: [{ role: 'user', content: aiPrompt }]
+        })
+      });
+      const aiData = await aiRes.json();
+      const aiText = aiData.content?.[0]?.text || 'Narxni hisoblashda xatolik yuz berdi.';
+
+      // 3. Mijozga Telegram orqali narx yuborish
+      const tgUsername = tg.value.trim().replace('@', '');
+      
+      // Avval username bo'yicha chat topish
+      const getChatRes = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/getUpdates`);
+      const getChatData = await getChatRes.json();
+      
+      // Barcha update lardan mijoz chat ID ni topish
+      let mijozChatId = null;
+      if (getChatData.ok && getChatData.result) {
+        for (const update of getChatData.result) {
+          const chat = update.message?.chat || update.message?.from;
+          if (chat?.username?.toLowerCase() === tgUsername.toLowerCase()) {
+            mijozChatId = chat.id;
+            break;
+          }
+        }
+      }
+
+      const mijozMsg = `Assalomu alaykum, ${ism.value.trim()}! 👋
+
+Mebel buyurtmangiz uchun rahmat!
+
+${aiText}
+
+_Bu taxminiy narx. Aniq hisob-kitob uchun ustamiz siz bilan bog'lanadi._`;
+
+      if (mijozChatId) {
+        await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ chat_id: mijozChatId, text: mijozMsg, parse_mode: 'Markdown' })
+        });
+      } else {
+        // Mijoz bot bilan muloqot qilmagan — sizga eslatma yuborish
+        await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            chat_id: CHAT_ID, 
+            text: `⚠️ *Diqqat!* @${tgUsername} hali bot bilan muloqot qilmagan.\n\nQuyidagi taxminiy narxni unga qo'lda yuboring:\n\n${aiText}`, 
+            parse_mode: 'Markdown' 
+          })
+        });
+      }
+
+      document.getElementById('modal').classList.add('show');
+    } catch(e) {
+      console.error(e);
+      alert('Internet bilan muammo yoki xatolik bor. Iltimos tekshiring.');
+    }
+
+    btn.textContent = '✦ Buyurtmani Yuborish';
+    btn.disabled = false;
+  }
+
+  function closeModal() {
+    document.getElementById('modal').classList.remove('show');
+    // Formani tozalash
+    document.querySelectorAll('.option-row').forEach(r => r.classList.remove('selected'));
+    Object.keys(selections).forEach(k => delete selections[k]);
+    document.querySelectorAll('input[type="radio"]').forEach(r => r.checked = false);
+    ['mijoz-ism','mijoz-tel','mijoz-manzil','mijoz-tg','uzunlik','chuqurlik','balandlik'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.value = '';
+    });
+    document.querySelector('.qoshimcha-section textarea').value = '';
+    document.getElementById('sana').valueAsDate = new Date();
+  }
+</script>
+</body>
+</html>
