@@ -211,6 +211,13 @@
     flex-direction: column;
     gap: 8px;
   }
+  /* iPhone touch fix */
+  .option-row, .budget-row {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    cursor: pointer;
+  }
+
   .option-row {
     display: grid;
     grid-template-columns: 1fr auto;
@@ -1165,6 +1172,16 @@
     }
   }
 
+  // iPhone uchun touch eventi
+  document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.option-row').forEach(function(row) {
+      row.addEventListener('touchend', function(e) {
+        e.preventDefault();
+        selectOpt(this);
+      });
+    });
+  });
+
   async function submitForm() {
     // --- Validatsiya ---
     const requiredGroups = ['korpus','fasad','stol','furnitura','budjet'];
@@ -1262,32 +1279,42 @@ Javob formati (aynan shu tartibda yoz):
 ⏰ Taxminiy muddati: [necha kun]
 📞 Aniq narx uchun: +998 91 135 44 66`;
 
-      const aiRes = await fetch('https://api.anthropic.com/v1/messages', {
+      const OPENROUTER_KEY = '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';
+      const aiRes = await fetch('https://openrouter.ai/api/v1/chat/completions', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${OPENROUTER_KEY}`,
+          'HTTP-Referer': 'https://yakubovibrohim.github.io',
+          'X-Title': 'MBI Mebel Anketa'
+        },
         body: JSON.stringify({
-          model: 'claude-sonnet-4-20250514',
-          max_tokens: 400,
-          messages: [{ role: 'user', content: aiPrompt }]
+          model: 'meta-llama/llama-3.3-8b-instruct:free',
+          messages: [{ role: 'user', content: aiPrompt }],
+          max_tokens: 400
         })
       });
       const aiData = await aiRes.json();
-      const aiText = aiData.content?.[0]?.text || 'Narxni hisoblashda xatolik yuz berdi.';
+      const aiText = aiData.choices?.[0]?.message?.content || 'Narxni hisoblashda xatolik yuz berdi.';
 
       // 3. Mijozga Telegram orqali narx yuborish
-      const tgUsername = tg.value.trim().replace('@', '');
+      const tgUsername = tg.value.trim().replace('@', '').trim();
       
-      // Avval username bo'yicha chat topish
-      const getChatRes = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/getUpdates`);
+      // getUpdates dan barcha xabarlarni olish (ko'proq limit bilan)
+      const getChatRes = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/getUpdates?limit=100&allowed_updates=["message"]`);
       const getChatData = await getChatRes.json();
       
       // Barcha update lardan mijoz chat ID ni topish
       let mijozChatId = null;
       if (getChatData.ok && getChatData.result) {
-        for (const update of getChatData.result) {
-          const chat = update.message?.chat || update.message?.from;
-          if (chat?.username?.toLowerCase() === tgUsername.toLowerCase()) {
-            mijozChatId = chat.id;
+        for (const update of getChatData.result.reverse()) {
+          const from = update.message?.from;
+          const chat = update.message?.chat;
+          if (
+            (from?.username?.toLowerCase() === tgUsername.toLowerCase()) ||
+            (chat?.username?.toLowerCase() === tgUsername.toLowerCase())
+          ) {
+            mijozChatId = chat?.id || from?.id;
             break;
           }
         }
@@ -1295,11 +1322,12 @@ Javob formati (aynan shu tartibda yoz):
 
       const mijozMsg = `Assalomu alaykum, ${ism.value.trim()}! 👋
 
-Mebel buyurtmangiz uchun rahmat!
+Mebel buyurtmangiz uchun rahmat! 🪑
 
 ${aiText}
 
-_Bu taxminiy narx. Aniq hisob-kitob uchun ustamiz siz bilan bog'lanadi._`;
+_Bu taxminiy narx. Aniq hisob-kitob uchun ustamiz siz bilan bog'lanadi._
+📞 +998 91 135 44 66`;
 
       if (mijozChatId) {
         await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
@@ -1308,13 +1336,20 @@ _Bu taxminiy narx. Aniq hisob-kitob uchun ustamiz siz bilan bog'lanadi._`;
           body: JSON.stringify({ chat_id: mijozChatId, text: mijozMsg, parse_mode: 'Markdown' })
         });
       } else {
-        // Mijoz bot bilan muloqot qilmagan — sizga eslatma yuborish
+        // Mijoz bot bilan muloqot qilmagan — sizga narx va eslatma yuborish
+        const eslatmaMsg = `⚠️ *@${tgUsername}* hali bot bilan muloqot qilmagan!
+
+Quyidagi taxminiy narxni unga *qo'lda* yuboring:
+
+${aiText}
+
+📞 Yoki siz bog'laning: ${tel.value.trim()}`;
         await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ 
             chat_id: CHAT_ID, 
-            text: `⚠️ *Diqqat!* @${tgUsername} hali bot bilan muloqot qilmagan.\n\nQuyidagi taxminiy narxni unga qo'lda yuboring:\n\n${aiText}`, 
+            text: eslatmaMsg, 
             parse_mode: 'Markdown' 
           })
         });
