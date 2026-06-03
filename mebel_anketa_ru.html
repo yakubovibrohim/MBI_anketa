@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Анкета заказа мебели — MBI</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --blue: #6B7FA3;
+    --blue-dark: #4A5A7A;
+    --blue-light: #8A9BBF;
+    --blue-bg: #F0F3F8;
+    --blue-border: rgba(107,127,163,0.25);
+    --blue-hover: rgba(107,127,163,0.45);
+    --bg: #F4F6FA;
+    --bg2: #FFFFFF;
+    --bg3: #EEF1F7;
+    --text: #1E2535;
+    --muted: #6B7A99;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+  .header { text-align: center; padding: 50px 20px 40px; background: linear-gradient(160deg, #2A3550 0%, #4A5A7A 100%); color: #fff; }
+  .header-logo { width: 90px; height: 90px; border-radius: 50%; background: rgba(255,255,255,0.12); border: 2px solid rgba(255,255,255,0.25); display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; overflow: hidden; }
+  .header-logo img { width: 80px; height: 80px; object-fit: contain; border-radius: 50%; }
+  h1 { font-family: 'Playfair Display', serif; font-size: clamp(26px, 5vw, 52px); font-weight: 900; letter-spacing: 6px; text-transform: uppercase; color: #fff; line-height: 1.1; }
+  h1 em { font-style: normal; color: var(--blue-light); }
+  .subtitle { margin-top: 10px; font-size: 12px; letter-spacing: 2px; color: rgba(255,255,255,0.55); text-transform: uppercase; }
+  .blue-line { width: 60px; height: 2px; background: linear-gradient(to right, transparent, var(--blue-light), transparent); margin: 20px auto 0; }
+
+  .form-wrap { max-width: 860px; margin: 0 auto; padding: 32px 20px 80px; }
+
+  .date-row { display: flex; align-items: center; gap: 16px; margin-bottom: 32px; padding: 18px 24px; background: var(--bg2); border: 1px solid var(--blue-border); border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+  .date-row label { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--blue); white-space: nowrap; font-weight: 600; }
+  .date-row input[type="date"] { flex: 1; background: transparent; border: none; border-bottom: 1px solid var(--blue-border); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 15px; padding: 4px 0; outline: none; }
+
+  .room-section { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 32px; }
+  @media(max-width:640px){ .room-section { grid-template-columns: 1fr; } }
+  .card { background: var(--bg2); border: 1px solid var(--blue-border); border-radius: 14px; padding: 24px; box-shadow: 0 2px 10px rgba(0,0,0,0.04); }
+  .card-title { font-family: 'Playfair Display', serif; font-size: 15px; color: var(--blue-dark); margin-bottom: 16px; display: flex; align-items: center; gap: 8px; font-weight: 700; }
+  .card-title::before { content: ''; width: 20px; height: 2px; background: var(--blue); flex-shrink: 0; }
+  .ixtiyoriy { font-size: 10px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 10px; }
+  .dims { display: flex; flex-direction: column; gap: 12px; }
+  .dim-row { display: flex; align-items: center; gap: 10px; }
+  .dim-row label { font-size: 12px; color: var(--muted); width: 80px; flex-shrink: 0; }
+  .dim-row input { flex: 1; background: var(--bg3); border: 1px solid var(--blue-border); border-radius: 8px; padding: 9px 12px; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 14px; outline: none; transition: border-color 0.2s; }
+  .dim-row input:focus { border-color: var(--blue); }
+  .dim-unit { font-size: 11px; color: var(--muted); }
+
+  .shakl-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .shakl-opt { position: relative; }
+  .shakl-opt input { position: absolute; opacity: 0; width: 0; height: 0; }
+  .shakl-opt label { display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 5px; border: 1px solid var(--blue-border); border-radius: 10px; padding: 12px 6px; cursor: pointer; transition: all 0.2s; background: var(--bg3); }
+  .shakl-opt label svg { width: 34px; height: 26px; fill: none; stroke: var(--muted); stroke-width: 2; }
+  .shakl-opt label span { font-size: 10px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; }
+  .shakl-opt input:checked + label { border-color: var(--blue); background: var(--blue-bg); }
+  .shakl-opt input:checked + label svg { stroke: var(--blue); }
+  .shakl-opt input:checked + label span { color: var(--blue-dark); font-weight: 600; }
+
+  .section { margin-bottom: 24px; }
+  .section-header { display: flex; align-items: baseline; gap: 14px; margin-bottom: 14px; }
+  .section-num { font-family: 'Playfair Display', serif; font-size: 28px; color: rgba(107,127,163,0.2); line-height: 1; }
+  .section-info h3 { font-family: 'Playfair Display', serif; font-size: 17px; color: var(--text); font-weight: 700; }
+  .section-info p { font-size: 11px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; margin-top: 2px; }
+  .options-grid { display: flex; flex-direction: column; gap: 7px; }
+
+  .option-row { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 12px; padding: 13px 16px; background: var(--bg2); border: 1px solid var(--blue-border); border-radius: 10px; cursor: pointer; transition: all 0.2s; user-select: none; box-shadow: 0 1px 4px rgba(0,0,0,0.03); -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+  .option-row:hover { border-color: var(--blue-hover); background: var(--blue-bg); }
+  .option-row.selected { border-color: var(--blue); background: var(--blue-bg); box-shadow: 0 2px 10px rgba(107,127,163,0.15); }
+  .opt-left { display: flex; flex-direction: column; gap: 2px; }
+  .opt-name { font-size: 14px; font-weight: 500; color: var(--text); display: flex; align-items: center; gap: 8px; }
+  .opt-desc { font-size: 12px; color: var(--muted); line-height: 1.4; }
+  .price-badge { font-size: 10px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; padding: 4px 10px; border-radius: 20px; white-space: nowrap; }
+  .price-arzon { background: rgba(46,125,50,0.1); color: #2E7D32; border: 1px solid rgba(46,125,50,0.25); }
+  .price-ortacha { background: rgba(107,127,163,0.12); color: var(--blue-dark); border: 1px solid rgba(107,127,163,0.3); }
+  .price-qimmat { background: rgba(107,79,139,0.1); color: #6B4F8B; border: 1px solid rgba(107,79,139,0.25); }
+  .checkmark { width: 20px; height: 20px; border-radius: 50%; border: 2px solid var(--blue-border); flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+  .option-row.selected .checkmark { background: var(--blue); border-color: var(--blue); }
+  .checkmark::after { content: ''; width: 6px; height: 6px; border-radius: 50%; background: white; opacity: 0; transition: opacity 0.2s; }
+  .option-row.selected .checkmark::after { opacity: 1; }
+
+  .budget-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  @media(max-width:480px){ .budget-grid { grid-template-columns: 1fr; } }
+  .budget-row { grid-template-columns: 1fr; justify-items: center; text-align: center; padding: 18px 14px; }
+  .budget-row .opt-name { justify-content: center; font-size: 14px; font-weight: 600; }
+
+  .izoh-field { margin-top: 8px; }
+  .izoh-label { font-size: 10px; color: var(--muted); letter-spacing: 1px; margin-bottom: 5px; text-transform: uppercase; font-weight: 600; }
+  .izoh-field input { width: 100%; background: var(--bg3); border: 1px solid var(--blue-border); border-radius: 8px; padding: 11px 14px; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 13px; outline: none; transition: border-color 0.2s; }
+  .izoh-field input::placeholder { color: #BDB0A0; }
+  .izoh-field input:focus { border-color: var(--blue); }
+
+  .budjet-input { margin-top: 12px; }
+  .budjet-input input { width: 100%; background: var(--bg3); border: 1px solid var(--blue-border); border-radius: 10px; padding: 13px 16px; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 15px; outline: none; transition: border-color 0.2s; }
+  .budjet-input input:focus { border-color: var(--blue); }
+  .budjet-input input::placeholder { color: #BDB0A0; }
+
+  .client-card { background: var(--bg2); border: 1px solid var(--blue-border); border-radius: 14px; padding: 28px; margin-bottom: 28px; box-shadow: 0 2px 10px rgba(0,0,0,0.04); }
+  .client-card .card-title { font-family: 'Playfair Display', serif; font-size: 17px; color: var(--blue-dark); margin-bottom: 20px; display: flex; align-items: center; gap: 10px; font-weight: 700; }
+  .client-card .card-title::before { content: ''; width: 20px; height: 2px; background: var(--blue); flex-shrink: 0; }
+  .client-fields { display: flex; flex-direction: column; gap: 14px; }
+  .client-field { display: flex; flex-direction: column; gap: 5px; }
+  .client-field label { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+  .client-field label span { color: #E74C3C; margin-left: 2px; }
+  .client-field input { background: var(--bg3); border: 1px solid var(--blue-border); border-radius: 10px; padding: 12px 15px; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 14px; outline: none; transition: border-color 0.2s; width: 100%; }
+  .client-field input:focus { border-color: var(--blue); background: white; }
+  .client-field input::placeholder { color: #BDB0A0; }
+  .client-field input.error { border-color: #E74C3C; background: #FFF5F5; }
+
+  .qoshimcha-section textarea { width: 100%; background: var(--bg2); border: 1px solid var(--blue-border); border-radius: 12px; padding: 16px; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 14px; resize: vertical; min-height: 90px; outline: none; transition: border-color 0.2s; }
+  .qoshimcha-section textarea:focus { border-color: var(--blue); }
+  .qoshimcha-section textarea::placeholder { color: #BDB0A0; }
+
+  .divider { border: none; border-top: 1px solid var(--blue-border); margin: 28px 0; }
+
+  .submit-area { margin-top: 40px; text-align: center; }
+  .submit-btn { background: linear-gradient(135deg, #4A5A7A, #6B7FA3); color: white; border: none; padding: 17px 56px; border-radius: 50px; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; transition: all 0.3s; box-shadow: 0 8px 24px rgba(74,90,122,0.3); }
+  .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(74,90,122,0.4); }
+  .submit-btn:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
+
+  .contact-footer { border-top: 1px solid var(--blue-border); margin-top: 40px; padding-top: 28px; display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; align-items: center; }
+  .contact-item { display: flex; align-items: center; gap: 7px; font-size: 13px; color: var(--muted); }
+  .contact-item a { color: var(--blue-dark); text-decoration: none; font-weight: 500; }
+  .contact-item a:hover { color: var(--blue); }
+
+  .modal-bg { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 100; align-items: center; justify-content: center; }
+  .modal-bg.show { display: flex; }
+  .modal { background: white; border: 1px solid var(--blue-border); border-radius: 20px; padding: 44px 36px; text-align: center; max-width: 380px; margin: 20px; animation: popIn 0.4s cubic-bezier(.175,.885,.32,1.275); box-shadow: 0 20px 60px rgba(0,0,0,0.15); }
+  @keyframes popIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+  .modal .icon { font-size: 52px; margin-bottom: 14px; }
+  .modal h2 { font-family: 'Playfair Display', serif; font-size: 22px; color: var(--blue-dark); margin-bottom: 10px; }
+  .modal p { font-size: 13px; color: var(--muted); line-height: 1.6; }
+  .modal-close { margin-top: 24px; background: transparent; border: 1.5px solid var(--blue); color: var(--blue-dark); padding: 11px 30px; border-radius: 40px; cursor: pointer; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 600; transition: all 0.2s; }
+  .modal-close:hover { background: var(--blue); color: white; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-logo">
+    <img src="https://yakubovibrohim.github.io/MBI_anketa/mbi-high-resolution-logo-transparent.png" alt="MBI" onerror="this.style.display='none'">
+  </div>
+  <h1>Анкета <em>Заказа</em><br>Мебели</h1>
+  <p class="subtitle">Mebel By Ibrohim — Качественная мебель</p>
+  <div class="blue-line"></div>
+</div>
+
+<div class="form-wrap">
+
+  <div class="date-row">
+    <label>★ Дата</label>
+    <input type="date" id="sana">
+  </div>
+
+  <!-- РАЗМЕРЫ -->
+  <div class="room-section">
+    <div class="card">
+      <div class="card-title">Размер комнаты</div>
+      <div class="ixtiyoriy">Необязательно</div>
+      <div class="dims">
+        <div class="dim-row"><label>Длина</label><input type="number" placeholder="0" min="0" id="uzunlik"><span class="dim-unit">см</span></div>
+        <div class="dim-row"><label>Глубина</label><input type="number" placeholder="0" min="0" id="chuqurlik"><span class="dim-unit">см</span></div>
+        <div class="dim-row"><label>Высота</label><input type="number" placeholder="0" min="0" id="balandlik"><span class="dim-unit">см</span></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Размер мебели</div>
+      <div class="ixtiyoriy">Необязательно</div>
+      <div class="dims">
+        <div class="dim-row"><label>Длина</label><input type="number" placeholder="0" min="0" id="mebel_uzunlik"><span class="dim-unit">см</span></div>
+        <div class="dim-row"><label>Высота</label><input type="number" placeholder="0" min="0" id="mebel_balandlik"><span class="dim-unit">см</span></div>
+        <div class="dim-row"><label>Глубина</label><input type="number" placeholder="0" min="0" id="mebel_chuqurlik"><span class="dim-unit">см</span></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Форма мебели</div>
+      <div class="shakl-grid">
+        <div class="shakl-opt"><input type="radio" name="shakl" id="sh1" value="Прямая"><label for="sh1"><svg viewBox="0 0 50 40"><rect x="5" y="10" width="40" height="20" rx="2"/></svg><span>Прямая</span></label></div>
+        <div class="shakl-opt"><input type="radio" name="shakl" id="sh2" value="Г-образная"><label for="sh2"><svg viewBox="0 0 50 40"><rect x="5" y="5" width="18" height="30" rx="2"/><rect x="5" y="25" width="40" height="10" rx="2"/></svg><span>Г-образн.</span></label></div>
+        <div class="shakl-opt"><input type="radio" name="shakl" id="sh3" value="П-образная"><label for="sh3"><svg viewBox="0 0 50 40"><rect x="5" y="5" width="12" height="30" rx="2"/><rect x="33" y="5" width="12" height="30" rx="2"/><rect x="5" y="28" width="40" height="9" rx="2"/></svg><span>П-образн.</span></label></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ВИД МЕБЕЛИ -->
+  <div class="section">
+    <div class="section-header"><span class="section-num">01</span><div class="section-info"><h3>Вид мебели</h3><p>Что нужно изготовить?</p></div></div>
+    <div class="options-grid">
+      <div class="option-row" data-group="tur" data-value="Кухонная мебель" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>🍳 Кухонная мебель</span></div></div>
+      <div class="option-row" data-group="tur" data-value="Мебель для спальни" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>🛏 Мебель для спальни</span></div></div>
+      <div class="option-row" data-group="tur" data-value="Шкаф" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>🗄 Шкаф</span></div></div>
+      <div class="option-row" data-group="tur" data-value="Гардероб" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>👔 Гардероб</span></div></div>
+      <div class="option-row" data-group="tur" data-value="Мебель для прихожей" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>🚪 Мебель для прихожей</span></div></div>
+      <div class="option-row" data-group="tur" data-value="Мебель TV зоны" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>📺 Мебель TV зоны</span></div></div>
+      <div class="option-row" data-group="tur" data-value="Стеновые панели" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>🪵 Стеновые панели</span></div></div>
+      <div class="option-row" data-group="tur" data-value="Другое" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>✏️ Другое</span></div></div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- КОРПУС -->
+  <div class="section">
+    <div class="section-header"><span class="section-num">02</span><div class="section-info"><h3>Корпус</h3><p>Внутренняя часть</p></div></div>
+    <div class="options-grid">
+      <div class="option-row" data-group="korpus" data-value="ЛМДФ" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>ЛМДФ</span><span class="opt-desc">Плотнее, устойчив к влаге, хорошо держит шурупы</span></div><span class="price-badge price-ortacha">Средний</span></div>
+      <div class="option-row" data-group="korpus" data-value="ЛДСП" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>ЛДСП</span><span class="opt-desc">Лёгкий, много цветов, не устойчив к влаге</span></div><span class="price-badge price-arzon">Эконом</span></div>
+      <div class="option-row" data-group="korpus" data-value="Фанера" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>Фанера</span><span class="opt-desc">Очень прочная, влагостойкая, не деформируется</span></div><span class="price-badge price-qimmat">Премиум</span></div>
+    </div>
+    <div class="izoh-field"><div class="izoh-label">Дополнительно</div><input type="text" placeholder="Дополнительные пожелания..."></div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ФАСАД -->
+  <div class="section">
+    <div class="section-header"><span class="section-num">03</span><div class="section-info"><h3>Фасад</h3><p>Дверцы</p></div></div>
+    <div class="options-grid">
+      <div class="option-row" data-group="fasad" data-value="ЛМДФ" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>ЛМДФ</span><span class="opt-desc">Как корпус, с кромкой</span></div><span class="price-badge price-arzon">Эконом</span></div>
+      <div class="option-row" data-group="fasad" data-value="Акрил" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>Акрил</span><span class="opt-desc">Много вариантов, глянцевый, с кромкой</span></div><span class="price-badge price-ortacha">Средний</span></div>
+      <div class="option-row" data-group="fasad" data-value="Крашеный МДФ" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>Крашеный МДФ</span><span class="opt-desc">Любой цвет по RAL</span></div><span class="price-badge price-qimmat">Премиум</span></div>
+      <div class="option-row" data-group="fasad" data-value="Шпон" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>Шпон</span><span class="opt-desc">Натуральное дерево, премиум вид</span></div><span class="price-badge price-qimmat">Премиум</span></div>
+      <div class="option-row" data-group="fasad" data-value="Aluframe (алюминиевая рамка со стеклом)" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>Aluframe</span><span class="opt-desc">Алюминиевая рамка со стеклом, современный вид</span></div><span class="price-badge price-qimmat">Премиум</span></div>
+    </div>
+    <div class="izoh-field"><div class="izoh-label">Дополнительно</div><input type="text" placeholder="Дополнительные пожелания..."></div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- СТОЛЕШНИЦА -->
+  <div class="section">
+    <div class="section-header"><span class="section-num">04</span><div class="section-info"><h3>Столешница</h3><p>Верхняя часть</p></div></div>
+    <div class="options-grid">
+      <div class="option-row" data-group="stol" data-value="ДСП" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>ДСП</span><span class="opt-desc">Много вариантов, не боится температуры</span></div><span class="price-badge price-arzon">Эконом</span></div>
+      <div class="option-row" data-group="stol" data-value="Искусственный камень" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>Искусственный камень</span><span class="opt-desc">Много вариантов, прочный</span></div><span class="price-badge price-qimmat">Премиум</span></div>
+      <div class="option-row" data-group="stol" data-value="Кварц" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>Кварц</span><span class="opt-desc">Твёрдый камень, устойчив к царапинам и температуре</span></div><span class="price-badge price-qimmat">Премиум</span></div>
+    </div>
+    <div class="izoh-field"><div class="izoh-label">Дополнительно</div><input type="text" placeholder="Дополнительные пожелания..."></div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ФУРНИТУРА -->
+  <div class="section">
+    <div class="section-header"><span class="section-num">05</span><div class="section-info"><h3>Фурнитура</h3><p>Механизмы</p></div></div>
+    <div class="options-grid">
+      <div class="option-row" data-group="furnitura" data-value="Blum" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>Blum</span><span class="opt-desc">Австрия, гарантия 20 лет, PREMIUM качество</span></div><span class="price-badge price-qimmat">Премиум</span></div>
+      <div class="option-row" data-group="furnitura" data-value="Hettich" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>Hettich</span><span class="opt-desc">Германия, гарантия 10 лет, PREMIUM качество</span></div><span class="price-badge price-qimmat">Премиум</span></div>
+      <div class="option-row" data-group="furnitura" data-value="GTV" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>GTV</span><span class="opt-desc">Польша, среднее качество</span></div><span class="price-badge price-ortacha">Средний</span></div>
+      <div class="option-row" data-group="furnitura" data-value="Китай" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>Китай</span><span class="opt-desc">Без гарантии</span></div><span class="price-badge price-arzon">Эконом</span></div>
+    </div>
+    <div class="izoh-field"><div class="izoh-label">Дополнительно</div><input type="text" placeholder="Дополнительные пожелания..."></div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- КРАСКА -->
+  <div class="section">
+    <div class="section-header"><span class="section-num">06</span><div class="section-info"><h3>Краска</h3><p>Лакокрасочное покрытие</p></div></div>
+    <div class="options-grid">
+      <div class="option-row" data-group="boyoq" data-value="Betek" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>Betek</span><span class="opt-desc">Турция, качественная, официальная гарантия</span></div><span class="price-badge price-ortacha">Средний</span></div>
+      <div class="option-row" data-group="boyoq" data-value="Genc" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>Genc</span><span class="opt-desc">Турция, качественная, официальная гарантия</span></div><span class="price-badge price-ortacha">Средний</span></div>
+      <div class="option-row" data-group="boyoq" data-value="Sirca" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>Sirca</span><span class="opt-desc">Италия, PREMIUM качество, официальная гарантия</span></div><span class="price-badge price-qimmat">Премиум</span></div>
+      <div class="option-row" data-group="boyoq" data-value="Автомобильная краска" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>Автомобильная краска</span><span class="opt-desc">Очень высокое качество, PREMIUM</span></div><span class="price-badge price-qimmat">Премиум</span></div>
+    </div>
+    <div class="izoh-field"><div class="izoh-label">Дополнительно</div><input type="text" placeholder="Дополнительные пожелания..."></div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- МАТЕРИАЛ -->
+  <div class="section">
+    <div class="section-header"><span class="section-num">07</span><div class="section-info"><h3>Материал</h3><p>Обивка</p></div></div>
+    <div class="options-grid">
+      <div class="option-row" data-group="material" data-value="Турция (стандарт)" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>Турция</span><span class="opt-desc">Турецкое производство, качественный</span></div><span class="price-badge price-ortacha">Средний</span></div>
+      <div class="option-row" data-group="material" data-value="Китай" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>Китай</span><span class="opt-desc">Китайское производство, среднее качество</span></div><span class="price-badge price-ortacha">Средний</span></div>
+      <div class="option-row" data-group="material" data-value="Турция (премиум)" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>Турция Премиум</span><span class="opt-desc">Премиум качество, устойчив к пятнам</span></div><span class="price-badge price-qimmat">Премиум</span></div>
+    </div>
+    <div class="izoh-field"><div class="izoh-label">Дополнительно</div><input type="text" placeholder="Дополнительные пожелания..."></div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- СТИЛЬ ДИЗАЙНА -->
+  <div class="section">
+    <div class="section-header"><span class="section-num">08</span><div class="section-info"><h3>Стиль дизайна</h3><p>Какой внешний вид хотите?</p></div></div>
+    <div class="options-grid">
+      <div class="option-row" data-group="dizayn" data-value="Классика" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>🏛 Классика</span><span class="opt-desc">Традиционный, изысканные детали</span></div></div>
+      <div class="option-row" data-group="dizayn" data-value="Неоклассика" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>🎨 Неоклассика</span><span class="opt-desc">Сочетание классики и современности</span></div></div>
+      <div class="option-row" data-group="dizayn" data-value="Минимализм" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>◻️ Минимализм</span><span class="opt-desc">Простые, чистые линии, без лишнего</span></div></div>
+      <div class="option-row" data-group="dizayn" data-value="Хайтек" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>⚙️ Хайтек</span><span class="opt-desc">Современный, металл и стекло</span></div></div>
+      <div class="option-row" data-group="dizayn" data-value="Другой стиль" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>✏️ Другой стиль</span><span class="opt-desc">Обсудим индивидуально</span></div></div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ТЕХНИКА -->
+  <div class="section">
+    <div class="section-header"><span class="section-num">09</span><div class="section-info"><h3>Техника</h3><p>Какая техника будет встроена?</p></div></div>
+    <div class="options-grid">
+      <div class="option-row" data-group="texnika_muzlatgich" data-value="Холодильник" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>❄️ Холодильник</span></div></div>
+      <div class="option-row" data-group="texnika_duxovoy" data-value="Духовой шкаф" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>🔥 Духовой шкаф</span></div></div>
+      <div class="option-row" data-group="texnika_idish" data-value="Посудомоечная машина" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>🚿 Посудомоечная машина</span></div></div>
+      <div class="option-row" data-group="texnika_mikro" data-value="Микроволновая печь" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>📡 Микроволновая печь</span></div></div>
+      <div class="option-row" data-group="texnika_vitrin" data-value="Витрина (стеклянная дверь)" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>🪟 Витрина (стеклянная дверь)</span></div></div>
+      <div class="option-row" data-group="texnika_yoq" data-value="Техники нет" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>❌ Техники нет</span></div></div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- СОСТОЯНИЕ -->
+  <div class="section">
+    <div class="section-header"><span class="section-num">10</span><div class="section-info"><h3>Состояние</h3><p>Новая комната или замена?</p></div></div>
+    <div class="options-grid">
+      <div class="option-row" data-group="holat" data-value="Новая комната — мебели нет" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>🆕 Новая комната</span><span class="opt-desc">В комнате ещё нет мебели</span></div></div>
+      <div class="option-row" data-group="holat" data-value="Замена существующей мебели" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>🔄 Замена</span><span class="opt-desc">Есть старая мебель, заменить на новую</span></div></div>
+      <div class="option-row" data-group="holat" data-value="Дополнительная мебель" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>➕ Дополнительная</span><span class="opt-desc">Добавить к существующей мебели</span></div></div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- СРОК -->
+  <div class="section">
+    <div class="section-header"><span class="section-num">11</span><div class="section-info"><h3>Когда нужно?</h3><p>Срок изготовления</p></div></div>
+    <div class="options-grid">
+      <div class="option-row" data-group="muddat" data-value="Как можно скорее (1-2 недели)" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>⚡ Как можно скорее</span><span class="opt-desc">Нужно в течение 1-2 недель</span></div></div>
+      <div class="option-row" data-group="muddat" data-value="В течение месяца" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>📅 В течение месяца</span></div></div>
+      <div class="option-row" data-group="muddat" data-value="2-3 месяца" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>🗓 2-3 месяца</span></div></div>
+      <div class="option-row" data-group="muddat" data-value="Пока не определился" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>🤔 Пока не определился</span></div></div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- БЮДЖЕТ -->
+  <div class="section">
+    <div class="section-header"><span class="section-num">12</span><div class="section-info"><h3>Бюджет</h3><p>Примерная сумма</p></div></div>
+    <div class="budget-grid">
+      <div class="option-row budget-row" data-group="budjet" data-value="Эконом" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>💰 Эконом</span><span class="opt-desc">Доступные материалы</span></div></div>
+      <div class="option-row budget-row" data-group="budjet" data-value="Средний" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>⚖️ Средний</span><span class="opt-desc">Баланс цены и качества</span></div></div>
+      <div class="option-row budget-row" data-group="budjet" data-value="Премиум" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>✨ Премиум</span><span class="opt-desc">Лучшие материалы</span></div></div>
+    </div>
+    <div class="budjet-input" style="margin-top:14px;">
+      <div class="izoh-label">Укажите конкретную сумму (необязательно)</div>
+      <input type="text" id="budjet-miqdor" placeholder="Например: 5 000 000 сум">
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ДОПОЛНИТЕЛЬНО -->
+  <div class="qoshimcha-section">
+    <div class="izoh-label" style="margin-bottom:8px;">Дополнительные пожелания</div>
+    <textarea id="qoshimcha" placeholder="Другие пожелания, вопросы или комментарии..."></textarea>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ФАЙЛ/ФОТО -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">13</span>
+      <div class="section-info"><h3>Проект или фото</h3><p>Необязательно</p></div>
+    </div>
+    <div style="background:#F0F3F8;border:1.5px dashed rgba(107,127,163,0.4);border-radius:14px;padding:24px;text-align:center;">
+      <div style="font-size:36px;margin-bottom:12px;">📎</div>
+      <p style="font-size:14px;font-weight:600;color:#4A5A7A;margin-bottom:8px;">Есть файл проекта или фото?</p>
+      <p style="font-size:13px;color:#6B7A99;line-height:1.7;margin-bottom:16px;">Готовый проект, фото комнаты или PDF файл<br>отправьте в наш бот — мастер рассмотрит.</p>
+      <a href="https://t.me/mbi_mebel_bot" target="_blank"
+        style="display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,#4A5A7A,#6B7FA3);color:white;text-decoration:none;padding:12px 24px;border-radius:10px;font-size:13px;font-weight:600;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8l-1.68 7.92c-.12.56-.48.7-.96.44l-2.64-1.96-1.28 1.24c-.14.14-.26.26-.52.26l.18-2.68 4.8-4.32c.2-.18-.04-.28-.32-.1L7.6 14.4l-2.58-.8c-.56-.18-.58-.56.12-.82l10.08-3.88c.46-.18.88.1.72.8l.7-.7z" fill="white"/></svg>
+        Перейти в @mbi_mebel_bot
+      </a>
+      <p style="font-size:11px;color:#9BA8C0;margin-top:12px;">Без файла тоже можно — это необязательно</p>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ДАННЫЕ КЛИЕНТА -->
+  <div class="client-card">
+    <div class="card-title">Данные клиента</div>
+    <div class="client-fields">
+      <div class="client-field"><label>Имя Фамилия <span>*</span></label><input type="text" id="mijoz-ism" placeholder="Например: Иванов Иван"></div>
+      <div class="client-field"><label>Номер телефона <span>*</span></label><input type="tel" id="mijoz-tel" placeholder="+998 90 000 00 00"></div>
+      <div class="client-field"><label>Адрес <span>*</span></label><input type="text" id="mijoz-manzil" placeholder="Город, район, улица, номер дома"></div>
+    </div>
+  </div>
+
+  <div class="submit-area">
+    <button class="submit-btn" onclick="submitForm()">✦ Отправить заявку</button>
+  </div>
+
+  <div class="contact-footer">
+    <div class="contact-item">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6.62 10.79a15.05 15.05 0 006.59 6.59l2.2-2.2a1 1 0 011.11-.27 11.36 11.36 0 003.54.57 1 1 0 011 1V21a1 1 0 01-1 1A17 17 0 013 5a1 1 0 011-1h3.5a1 1 0 011 1 11.36 11.36 0 00.57 3.54 1 1 0 01-.25 1.11l-2.2 2.14z" fill="#6B7FA3"/></svg>
+      <a href="tel:+998911354466">+998 91 135 44 66</a>
+    </div>
+    <div class="contact-item">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6.62 10.79a15.05 15.05 0 006.59 6.59l2.2-2.2a1 1 0 011.11-.27 11.36 11.36 0 003.54.57 1 1 0 011 1V21a1 1 0 01-1 1A17 17 0 013 5a1 1 0 011-1h3.5a1 1 0 011 1 11.36 11.36 0 00.57 3.54 1 1 0 01-.25 1.11l-2.2 2.14z" fill="#6B7FA3"/></svg>
+      <a href="tel:+998951904466">+998 95 190 44 66</a>
+    </div>
+    <div class="contact-item">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8l-1.68 7.92c-.12.56-.48.7-.96.44l-2.64-1.96-1.28 1.24c-.14.14-.26.26-.52.26l.18-2.68 4.8-4.32c.2-.18-.04-.28-.32-.1L7.6 14.4l-2.58-.8c-.56-.18-.58-.56.12-.82l10.08-3.88c.46-.18.88.1.72.8l.7-.7z" fill="#2AABEE"/></svg>
+      <a href="https://t.me/MBI_mebel" target="_blank">@MBI_mebel</a>
+    </div>
+    <div class="contact-item">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><defs><radialGradient id="ig2" cx="30%" cy="100%" r="130%"><stop offset="0%" stop-color="#fdf497"/><stop offset="5%" stop-color="#fdf497"/><stop offset="45%" stop-color="#fd5949"/><stop offset="60%" stop-color="#d6249f"/><stop offset="90%" stop-color="#285AEB"/></radialGradient></defs><rect x="2" y="2" width="20" height="20" rx="5" fill="url(#ig2)"/><circle cx="12" cy="12" r="5" stroke="white" stroke-width="1.8" fill="none"/><circle cx="17.5" cy="6.5" r="1.2" fill="white"/></svg>
+      <a href="https://instagram.com/mbi_mebel" target="_blank">@mbi_mebel</a>
+    </div>
+  </div>
+
+</div>
+
+<!-- MODAL -->
+<div class="modal-bg" id="modal">
+  <div class="modal">
+    <div class="icon">🎉</div>
+    <h2>Заявка отправлена!</h2>
+    <p>Ваша анкета успешно отправлена. Мы свяжемся с вами в ближайшее время.</p>
+    <div style="margin:20px 0;background:#F0F3F8;border-radius:12px;padding:16px;text-align:left;">
+      <p style="font-size:13px;color:#4A5A7A;font-weight:600;margin-bottom:8px;">📎 Есть файл проекта или фото?</p>
+      <p style="font-size:12px;color:#6B7A99;line-height:1.6;">Отправьте фото комнаты, готовый проект или PDF в наш бот:</p>
+      <a href="https://t.me/mbi_mebel_bot" target="_blank" style="display:block;margin-top:10px;background:linear-gradient(135deg,#4A5A7A,#6B7FA3);color:white;text-decoration:none;padding:11px 20px;border-radius:10px;font-size:13px;font-weight:600;text-align:center;">
+        📤 Перейти в @mbi_mebel_bot
+      </a>
+    </div>
+    <button class="modal-close" onclick="closeModal()">Закрыть</button>
+  </div>
+</div>
+
+<script>
+  const BOT_TOKEN = '8811277023:AAH_1iBPjb-dlmPDWc1vwMCPQEITzLuWDec';
+  const CHAT_ID = '1487569442';
+
+  document.getElementById('sana').valueAsDate = new Date();
+  const selections = {};
+
+  function selectOpt(row) {
+    const group = row.dataset.group;
+    const already = row.classList.contains('selected');
+    document.querySelectorAll('.option-row[data-group="' + group + '"]').forEach(r => r.classList.remove('selected'));
+    if (!already) { row.classList.add('selected'); selections[group] = row.dataset.value; }
+    else { delete selections[group]; }
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.option-row').forEach(function(row) {
+      row.addEventListener('touchend', function(e) { e.preventDefault(); selectOpt(this); });
+    });
+  });
+
+  async function submitForm() {
+    const ism = document.getElementById('mijoz-ism');
+    const tel = document.getElementById('mijoz-tel');
+    const manzil = document.getElementById('mijoz-manzil');
+    [ism, tel, manzil].forEach(f => f.classList.remove('error'));
+    let missing = [];
+    if (!ism.value.trim()) { ism.classList.add('error'); missing.push('Имя Фамилия'); }
+    if (!tel.value.trim()) { tel.classList.add('error'); missing.push('Номер телефона'); }
+    if (!manzil.value.trim()) { manzil.classList.add('error'); missing.push('Адрес'); }
+    if (missing.length > 0) { alert('Пожалуйста, заполните:\n• ' + missing.join('\n• ')); return; }
+
+    const sana = document.getElementById('sana').value;
+    const uzunlik = document.getElementById('uzunlik').value || '—';
+    const chuqurlik = document.getElementById('chuqurlik').value || '—';
+    const balandlik = document.getElementById('balandlik').value || '—';
+    const m_uzunlik = document.getElementById('mebel_uzunlik').value || '—';
+    const m_balandlik = document.getElementById('mebel_balandlik').value || '—';
+    const m_chuqurlik = document.getElementById('mebel_chuqurlik').value || '—';
+    const shakl = document.querySelector('input[name="shakl"]:checked')?.value || '—';
+    const budjet = selections['budjet'] || '—';
+    const budjetMiqdor = document.getElementById('budjet-miqdor').value || '—';
+    const qoshimcha = document.getElementById('qoshimcha').value || '';
+    const texnikalar = ['texnika_muzlatgich','texnika_duxovoy','texnika_idish','texnika_mikro','texnika_vitrin','texnika_yoq']
+      .map(k => selections[k]).filter(Boolean).join(', ') || '—';
+
+    const msg = `🪑 НОВЫЙ ЗАКАЗ МЕБЕЛИ
+📅 Дата: ${sana}
+
+👤 КЛИЕНТ
+├ Имя: ${ism.value.trim()}
+├ Тел: ${tel.value.trim()}
+└ Адрес: ${manzil.value.trim()}
+
+🏠 ВИД МЕБЕЛИ: ${selections['tur'] || '—'}
+🎨 СТИЛЬ: ${selections['dizayn'] || '—'}
+
+📐 РАЗМЕР КОМНАТЫ: ${uzunlik} x ${chuqurlik} x ${balandlik} см
+📏 РАЗМЕР МЕБЕЛИ: ${m_uzunlik} x ${m_balandlik} x ${m_chuqurlik} см
+📐 ФОРМА: ${shakl}
+
+🔩 МАТЕРИАЛЫ
+├ Корпус: ${selections['korpus'] || '—'}
+├ Фасад: ${selections['fasad'] || '—'}
+├ Столешница: ${selections['stol'] || '—'}
+├ Фурнитура: ${selections['furnitura'] || '—'}
+├ Краска: ${selections['boyoq'] || '—'}
+└ Материал: ${selections['material'] || '—'}
+
+🔧 ТЕХНИКА: ${texnikalar}
+🏷 СОСТОЯНИЕ: ${selections['holat'] || '—'}
+⏰ СРОК: ${selections['muddat'] || '—'}
+💰 БЮДЖЕТ: ${budjet}${budjetMiqdor !== '—' ? ' — ' + budjetMiqdor : ''}
+${qoshimcha ? '\n📝 ПРИМЕЧАНИЕ: ' + qoshimcha : ''}`;
+
+    const btn = document.querySelector('.submit-btn');
+    btn.textContent = '⏳ Отправляется...';
+    btn.disabled = true;
+
+    try {
+      const res = await fetch('https://api.telegram.org/bot' + BOT_TOKEN + '/sendMessage', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ chat_id: CHAT_ID, text: msg })
+      });
+      const data = await res.json();
+      if (!data.ok) throw new Error('Не отправлено');
+      document.getElementById('modal').classList.add('show');
+    } catch(e) {
+      console.error(e);
+      alert('Произошла ошибка. Пожалуйста, попробуйте снова.');
+    }
+
+    btn.textContent = '✦ Отправить заявку';
+    btn.disabled = false;
+  }
+
+  function closeModal() {
+    document.getElementById('modal').classList.remove('show');
+    document.querySelectorAll('.option-row').forEach(r => r.classList.remove('selected'));
+    Object.keys(selections).forEach(k => delete selections[k]);
+    document.querySelectorAll('input[type="radio"]').forEach(r => r.checked = false);
+    ['mijoz-ism','mijoz-tel','mijoz-manzil','uzunlik','chuqurlik','balandlik',
+     'mebel_uzunlik','mebel_balandlik','mebel_chuqurlik','budjet-miqdor'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.value = '';
+    });
+    document.getElementById('qoshimcha').value = '';
+    document.getElementById('sana').valueAsDate = new Date();
+  }
+</script>
+</body>
+</html>
