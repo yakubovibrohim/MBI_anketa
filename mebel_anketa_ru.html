@@ -522,6 +522,10 @@ ${qoshimcha ? '\n📝 ПРИМЕЧАНИЕ: ' + qoshimcha : ''}`;
       const data = await res.json();
       if (!data.ok) throw new Error('Не отправлено');
       document.getElementById('modal').classList.add('show');
+      await fetch('https://mbi-bot-yw9q.onrender.com/notify', {
+        method: 'POST', headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({phone: tel.value.trim(), name: ism.value.trim(), lang: 'ru'})
+      }).catch(()=>{});
     } catch(e) {
       console.error(e);
       alert('Произошла ошибка. Пожалуйста, попробуйте снова.');
