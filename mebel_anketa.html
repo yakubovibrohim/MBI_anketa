@@ -4,3 +4,628 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Mebel Buyurtma Anketasi — MBI</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --blue: #6B7FA3;
+    --blue-dark: #4A5A7A;
+    --blue-light: #8A9BBF;
+    --blue-bg: #F0F3F8;
+    --blue-border: rgba(107,127,163,0.25);
+    --blue-hover: rgba(107,127,163,0.45);
+    --bg: #F4F6FA;
+    --bg2: #FFFFFF;
+    --bg3: #EEF1F7;
+    --text: #1E2535;
+    --muted: #6B7A99;
+    --cheap: #2E7D32;
+    --premium: #6B4F8B;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+  /* HEADER */
+  .header {
+    text-align: center;
+    padding: 50px 20px 40px;
+    background: linear-gradient(160deg, #2A3550 0%, #4A5A7A 100%);
+    color: #fff;
+    position: relative;
+  }
+  .header-logo {
+    width: 90px; height: 90px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.12);
+    border: 2px solid rgba(255,255,255,0.25);
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 20px;
+    overflow: hidden;
+  }
+  .header-logo img { width: 80px; height: 80px; object-fit: contain; border-radius: 50%; }
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(26px, 5vw, 52px);
+    font-weight: 900;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    color: #fff;
+    line-height: 1.1;
+  }
+  h1 em { font-style: normal; color: var(--blue-light); }
+  .subtitle { margin-top: 10px; font-size: 12px; letter-spacing: 2px; color: rgba(255,255,255,0.55); text-transform: uppercase; }
+  .blue-line { width: 60px; height: 2px; background: linear-gradient(to right, transparent, var(--blue-light), transparent); margin: 20px auto 0; }
+
+  /* FORM */
+  .form-wrap { max-width: 860px; margin: 0 auto; padding: 32px 20px 80px; }
+
+  /* DATE */
+  .date-row {
+    display: flex; align-items: center; gap: 16px;
+    margin-bottom: 32px; padding: 18px 24px;
+    background: var(--bg2); border: 1px solid var(--blue-border);
+    border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  }
+  .date-row label { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--blue); white-space: nowrap; font-weight: 600; }
+  .date-row input[type="date"] { flex: 1; background: transparent; border: none; border-bottom: 1px solid var(--blue-border); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 15px; padding: 4px 0; outline: none; }
+
+  /* ROOM + SHAKL */
+  .room-section { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 32px; }
+  @media(max-width:640px){ .room-section { grid-template-columns: 1fr; } }
+  .card { background: var(--bg2); border: 1px solid var(--blue-border); border-radius: 14px; padding: 24px; box-shadow: 0 2px 10px rgba(0,0,0,0.04); }
+  .card-title { font-family: 'Playfair Display', serif; font-size: 15px; color: var(--blue-dark); margin-bottom: 16px; display: flex; align-items: center; gap: 8px; font-weight: 700; }
+  .card-title::before { content: ''; width: 20px; height: 2px; background: var(--blue); flex-shrink: 0; }
+  .ixtiyoriy { font-size: 10px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 10px; }
+  .dims { display: flex; flex-direction: column; gap: 12px; }
+  .dim-row { display: flex; align-items: center; gap: 10px; }
+  .dim-row label { font-size: 12px; color: var(--muted); width: 72px; flex-shrink: 0; }
+  .dim-row input { flex: 1; background: var(--bg3); border: 1px solid var(--blue-border); border-radius: 8px; padding: 9px 12px; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 14px; outline: none; transition: border-color 0.2s; }
+  .dim-row input:focus { border-color: var(--blue); }
+  .dim-unit { font-size: 11px; color: var(--muted); }
+
+  /* SHAKL */
+  .shakl-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .shakl-opt { position: relative; }
+  .shakl-opt input { position: absolute; opacity: 0; width: 0; height: 0; }
+  .shakl-opt label { display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 5px; border: 1px solid var(--blue-border); border-radius: 10px; padding: 12px 6px; cursor: pointer; transition: all 0.2s; background: var(--bg3); }
+  .shakl-opt label svg { width: 34px; height: 26px; fill: none; stroke: var(--muted); stroke-width: 2; transition: stroke 0.2s; }
+  .shakl-opt label span { font-size: 10px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; }
+  .shakl-opt input:checked + label { border-color: var(--blue); background: var(--blue-bg); }
+  .shakl-opt input:checked + label svg { stroke: var(--blue); }
+  .shakl-opt input:checked + label span { color: var(--blue-dark); font-weight: 600; }
+
+  /* SECTIONS */
+  .section { margin-bottom: 24px; }
+  .section-header { display: flex; align-items: baseline; gap: 14px; margin-bottom: 14px; }
+  .section-num { font-family: 'Playfair Display', serif; font-size: 28px; color: rgba(107,127,163,0.2); line-height: 1; }
+  .section-info h3 { font-family: 'Playfair Display', serif; font-size: 17px; color: var(--text); font-weight: 700; }
+  .section-info p { font-size: 11px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; margin-top: 2px; }
+  .options-grid { display: flex; flex-direction: column; gap: 7px; }
+
+  /* OPTION ROW */
+  .option-row {
+    display: grid; grid-template-columns: 1fr auto; align-items: center;
+    gap: 12px; padding: 13px 16px; background: var(--bg2);
+    border: 1px solid var(--blue-border); border-radius: 10px;
+    cursor: pointer; transition: all 0.2s; user-select: none;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+    -webkit-tap-highlight-color: transparent; touch-action: manipulation;
+  }
+  .option-row:hover { border-color: var(--blue-hover); background: var(--blue-bg); }
+  .option-row.selected { border-color: var(--blue); background: var(--blue-bg); box-shadow: 0 2px 10px rgba(107,127,163,0.15); }
+  .opt-left { display: flex; flex-direction: column; gap: 2px; }
+  .opt-name { font-size: 14px; font-weight: 500; color: var(--text); display: flex; align-items: center; gap: 8px; }
+  .opt-desc { font-size: 12px; color: var(--muted); line-height: 1.4; }
+  .price-badge { font-size: 10px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; padding: 4px 10px; border-radius: 20px; white-space: nowrap; }
+  .price-arzon { background: rgba(46,125,50,0.1); color: #2E7D32; border: 1px solid rgba(46,125,50,0.25); }
+  .price-ortacha { background: rgba(107,127,163,0.12); color: var(--blue-dark); border: 1px solid rgba(107,127,163,0.3); }
+  .price-qimmat { background: rgba(107,79,139,0.1); color: #6B4F8B; border: 1px solid rgba(107,79,139,0.25); }
+  .checkmark { width: 20px; height: 20px; border-radius: 50%; border: 2px solid var(--blue-border); flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+  .option-row.selected .checkmark { background: var(--blue); border-color: var(--blue); }
+  .checkmark::after { content: ''; width: 6px; height: 6px; border-radius: 50%; background: white; opacity: 0; transition: opacity 0.2s; }
+  .option-row.selected .checkmark::after { opacity: 1; }
+
+  /* BUDGET ROW */
+  .budget-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  @media(max-width:480px){ .budget-grid { grid-template-columns: 1fr; } }
+  .budget-row { grid-template-columns: 1fr; justify-items: center; text-align: center; padding: 18px 14px; }
+  .budget-row .opt-name { justify-content: center; font-size: 14px; font-weight: 600; }
+
+  /* IZOH */
+  .izoh-field { margin-top: 8px; }
+  .izoh-label { font-size: 10px; color: var(--muted); letter-spacing: 1px; margin-bottom: 5px; text-transform: uppercase; font-weight: 600; }
+  .izoh-field input { width: 100%; background: var(--bg3); border: 1px solid var(--blue-border); border-radius: 8px; padding: 11px 14px; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 13px; outline: none; transition: border-color 0.2s; }
+  .izoh-field input::placeholder { color: #BDB0A0; }
+  .izoh-field input:focus { border-color: var(--blue); }
+
+  /* BUDJET INPUT */
+  .budjet-input { margin-top: 12px; }
+  .budjet-input input { width: 100%; background: var(--bg3); border: 1px solid var(--blue-border); border-radius: 10px; padding: 13px 16px; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 15px; outline: none; transition: border-color 0.2s; }
+  .budjet-input input:focus { border-color: var(--blue); }
+  .budjet-input input::placeholder { color: #BDB0A0; }
+
+  /* CLIENT */
+  .client-card { background: var(--bg2); border: 1px solid var(--blue-border); border-radius: 14px; padding: 28px; margin-bottom: 28px; box-shadow: 0 2px 10px rgba(0,0,0,0.04); }
+  .client-card .card-title { font-family: 'Playfair Display', serif; font-size: 17px; color: var(--blue-dark); margin-bottom: 20px; display: flex; align-items: center; gap: 10px; font-weight: 700; }
+  .client-card .card-title::before { content: ''; width: 20px; height: 2px; background: var(--blue); flex-shrink: 0; }
+  .client-fields { display: flex; flex-direction: column; gap: 14px; }
+  .client-field { display: flex; flex-direction: column; gap: 5px; }
+  .client-field label { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+  .client-field label span { color: #E74C3C; margin-left: 2px; }
+  .client-field input { background: var(--bg3); border: 1px solid var(--blue-border); border-radius: 10px; padding: 12px 15px; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 14px; outline: none; transition: border-color 0.2s; width: 100%; }
+  .client-field input:focus { border-color: var(--blue); background: white; }
+  .client-field input::placeholder { color: #BDB0A0; }
+  .client-field input.error { border-color: #E74C3C; background: #FFF5F5; }
+
+  /* QOSHIMCHA */
+  .qoshimcha-section textarea { width: 100%; background: var(--bg2); border: 1px solid var(--blue-border); border-radius: 12px; padding: 16px; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 14px; resize: vertical; min-height: 90px; outline: none; transition: border-color 0.2s; box-shadow: 0 1px 4px rgba(0,0,0,0.03); }
+  .qoshimcha-section textarea:focus { border-color: var(--blue); }
+  .qoshimcha-section textarea::placeholder { color: #BDB0A0; }
+
+  /* DIVIDER */
+  .divider { border: none; border-top: 1px solid var(--blue-border); margin: 28px 0; }
+
+  /* SUBMIT */
+  .submit-area { margin-top: 40px; text-align: center; }
+  .submit-btn { background: linear-gradient(135deg, #4A5A7A, #6B7FA3); color: white; border: none; padding: 17px 56px; border-radius: 50px; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; transition: all 0.3s; box-shadow: 0 8px 24px rgba(74,90,122,0.3); }
+  .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(74,90,122,0.4); }
+  .submit-btn:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
+
+  /* CONTACT */
+  .contact-footer { border-top: 1px solid var(--blue-border); margin-top: 40px; padding-top: 28px; display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; align-items: center; }
+  .contact-item { display: flex; align-items: center; gap: 7px; font-size: 13px; color: var(--muted); }
+  .contact-item a { color: var(--blue-dark); text-decoration: none; font-weight: 500; }
+  .contact-item a:hover { color: var(--blue); }
+
+  /* MODAL */
+  .modal-bg { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 100; align-items: center; justify-content: center; }
+  .modal-bg.show { display: flex; }
+  .modal { background: white; border: 1px solid var(--blue-border); border-radius: 20px; padding: 44px 36px; text-align: center; max-width: 380px; margin: 20px; animation: popIn 0.4s cubic-bezier(.175,.885,.32,1.275); box-shadow: 0 20px 60px rgba(0,0,0,0.15); }
+  @keyframes popIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+  .modal .icon { font-size: 52px; margin-bottom: 14px; }
+  .modal h2 { font-family: 'Playfair Display', serif; font-size: 22px; color: var(--blue-dark); margin-bottom: 10px; }
+  .modal p { font-size: 13px; color: var(--muted); line-height: 1.6; }
+  .modal-close { margin-top: 24px; background: transparent; border: 1.5px solid var(--blue); color: var(--blue-dark); padding: 11px 30px; border-radius: 40px; cursor: pointer; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 600; transition: all 0.2s; }
+  .modal-close:hover { background: var(--blue); color: white; }
+
+  /* iPhone fix */
+  .shakl-opt label, .budget-row { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+
+  /* Section title bold */
+  .budget-title { font-family: 'Playfair Display', serif; font-size: 18px; color: var(--text); margin-bottom: 14px; text-align: center; font-weight: 700; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-logo">
+    <img src="https://yakubovibrohim.github.io/MBI_anketa/mbi-high-resolution-logo-transparent.png" alt="MBI Logo" onerror="this.style.display='none'">
+  </div>
+  <h1>Mebel <em>Buyurtma</em><br>Anketasi</h1>
+  <p class="subtitle">Mebel By Ibrohim — Sifatli mebel</p>
+  <div class="blue-line"></div>
+</div>
+
+<div class="form-wrap">
+
+  <!-- SANA -->
+  <div class="date-row">
+    <label>★ Sana</label>
+    <input type="date" id="sana" name="sana">
+  </div>
+
+  <!-- XONA + MEBEL O'LCHAMI + SHAKL -->
+  <div class="room-section">
+    <div class="card">
+      <div class="card-title">Xona O'lchami</div>
+      <div class="ixtiyoriy">Ixtiyoriy</div>
+      <div class="dims">
+        <div class="dim-row"><label>Uzunligi</label><input type="number" placeholder="0" min="0" id="uzunlik"><span class="dim-unit">sm</span></div>
+        <div class="dim-row"><label>Chuqurligi</label><input type="number" placeholder="0" min="0" id="chuqurlik"><span class="dim-unit">sm</span></div>
+        <div class="dim-row"><label>Balandligi</label><input type="number" placeholder="0" min="0" id="balandlik"><span class="dim-unit">sm</span></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Mebel O'lchami</div>
+      <div class="ixtiyoriy">Ixtiyoriy</div>
+      <div class="dims">
+        <div class="dim-row"><label>Uzunligi</label><input type="number" placeholder="0" min="0" id="mebel_uzunlik"><span class="dim-unit">sm</span></div>
+        <div class="dim-row"><label>Balandligi</label><input type="number" placeholder="0" min="0" id="mebel_balandlik"><span class="dim-unit">sm</span></div>
+        <div class="dim-row"><label>Chuqurligi</label><input type="number" placeholder="0" min="0" id="mebel_chuqurlik"><span class="dim-unit">sm</span></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Mebel Shakli</div>
+      <div class="shakl-grid">
+        <div class="shakl-opt"><input type="radio" name="shakl" id="sh1" value="Tekis"><label for="sh1"><svg viewBox="0 0 50 40"><rect x="5" y="10" width="40" height="20" rx="2"/></svg><span>Tekis</span></label></div>
+        <div class="shakl-opt"><input type="radio" name="shakl" id="sh2" value="L-shakl"><label for="sh2"><svg viewBox="0 0 50 40"><rect x="5" y="5" width="18" height="30" rx="2"/><rect x="5" y="25" width="40" height="10" rx="2"/></svg><span>L</span></label></div>
+        <div class="shakl-opt"><input type="radio" name="shakl" id="sh3" value="U-shakl"><label for="sh3"><svg viewBox="0 0 50 40"><rect x="5" y="5" width="12" height="30" rx="2"/><rect x="33" y="5" width="12" height="30" rx="2"/><rect x="5" y="28" width="40" height="9" rx="2"/></svg><span>U</span></label></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MEBEL TURI -->
+  <div class="section">
+    <div class="section-header"><span class="section-num">01</span><div class="section-info"><h3>Mebel Turi</h3><p>Qaysi mebel kerak?</p></div></div>
+    <div class="options-grid">
+      <div class="option-row" data-group="tur" data-value="Oshxona mebeli" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>🍳 Oshxona mebeli</span></div></div>
+      <div class="option-row" data-group="tur" data-value="Yotoqxona mebeli" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>🛏 Yotoqxona mebeli</span></div></div>
+      <div class="option-row" data-group="tur" data-value="Shkaf" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>🗄 Shkaf</span></div></div>
+      <div class="option-row" data-group="tur" data-value="Garderob" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>👔 Garderob</span></div></div>
+      <div class="option-row" data-group="tur" data-value="Prixojka mebeli" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>🚪 Prixojka mebeli</span></div></div>
+      <div class="option-row" data-group="tur" data-value="TV zona mebeli" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>📺 TV zona mebeli</span></div></div>
+      <div class="option-row" data-group="tur" data-value="Devor paneli" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>🪵 Devor paneli</span></div></div>
+      <div class="option-row" data-group="tur" data-value="Boshqa" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>✏️ Boshqa</span></div></div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- KO'RPUS -->
+  <div class="section">
+    <div class="section-header"><span class="section-num">02</span><div class="section-info"><h3>Ko'rpus</h3><p>Ichki qismi</p></div></div>
+    <div class="options-grid">
+      <div class="option-row" data-group="korpus" data-value="LMDF" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>LMDF</span><span class="opt-desc">Zichroq, namlikka biroz chidamli, vintlarni yaxshi ushlaydi</span></div><span class="price-badge price-ortacha">O'rtacha</span></div>
+      <div class="option-row" data-group="korpus" data-value="LDSP" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>LDSP</span><span class="opt-desc">Yengil, rangi ko'p, namlikka umuman chidamsiz</span></div><span class="price-badge price-arzon">Arzon</span></div>
+      <div class="option-row" data-group="korpus" data-value="Fanera" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>Fanera</span><span class="opt-desc">Juda mustahkam, namlikka chidamli, egilmaydi</span></div><span class="price-badge price-qimmat">Qimmat</span></div>
+    </div>
+    <div class="izoh-field"><div class="izoh-label">Qo'shimcha izoh</div><input type="text" placeholder="Qo'shimcha fikr..."></div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- FASAD -->
+  <div class="section">
+    <div class="section-header"><span class="section-num">03</span><div class="section-info"><h3>Fasad</h3><p>Eshiklari</p></div></div>
+    <div class="options-grid">
+      <div class="option-row" data-group="fasad" data-value="LMDF" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>LMDF</span><span class="opt-desc">Ko'rpus bilan bir xil, kromka qilinadi</span></div><span class="price-badge price-arzon">Arzon</span></div>
+      <div class="option-row" data-group="fasad" data-value="Akril" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>Akril</span><span class="opt-desc">Ko'p turlari mavjud, orqa qismi oq, kromka qilinadi</span></div><span class="price-badge price-ortacha">O'rtacha</span></div>
+      <div class="option-row" data-group="fasad" data-value="Bo'yoqli MDF" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>Bo'yoqli MDF</span><span class="opt-desc">Istalgan rangga bo'yaladi</span></div><span class="price-badge price-qimmat">Qimmat</span></div>
+      <div class="option-row" data-group="fasad" data-value="Shpon" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>Shpon</span><span class="opt-desc">Tabiiy yog'och qoplama, premium ko'rinish</span></div><span class="price-badge price-qimmat">Qimmat</span></div>
+      <div class="option-row" data-group="fasad" data-value="Aluframe (alyumin ramkali oyna)" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>Aluframe</span><span class="opt-desc">Alyumin ramkali oyna fasad, zamonaviy ko'rinish</span></div><span class="price-badge price-qimmat">Qimmat</span></div>
+    </div>
+    <div class="izoh-field"><div class="izoh-label">Qo'shimcha izoh</div><input type="text" placeholder="Qo'shimcha fikr..."></div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- STOLESHNITSA -->
+  <div class="section">
+    <div class="section-header"><span class="section-num">04</span><div class="section-info"><h3>Stoleshnitsa</h3><p>Ustki qismi</p></div></div>
+    <div class="options-grid">
+      <div class="option-row" data-group="stol" data-value="DSP" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>DSP</span><span class="opt-desc">Ko'p turlari mavjud, issiqdan qo'rqmaydi</span></div><span class="price-badge price-arzon">Arzon</span></div>
+      <div class="option-row" data-group="stol" data-value="Suniy tosh" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>Suniy tosh</span><span class="opt-desc">Ko'p turlari mavjud, chidamli</span></div><span class="price-badge price-qimmat">Qimmat</span></div>
+      <div class="option-row" data-group="stol" data-value="Kvars" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>Kvars</span><span class="opt-desc">Qattiq tosh, issiqqa ham tirnalishlarga ham chidamli</span></div><span class="price-badge price-qimmat">Qimmat</span></div>
+    </div>
+    <div class="izoh-field"><div class="izoh-label">Qo'shimcha izoh</div><input type="text" placeholder="Qo'shimcha fikr..."></div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- FURNITURA -->
+  <div class="section">
+    <div class="section-header"><span class="section-num">05</span><div class="section-info"><h3>Furnitura</h3><p>Mexanizmlar</p></div></div>
+    <div class="options-grid">
+      <div class="option-row" data-group="furnitura" data-value="Blum" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>Blum</span><span class="opt-desc">Avstriya, 20 yil kafolat, PREMIUM sifat</span></div><span class="price-badge price-qimmat">Qimmat</span></div>
+      <div class="option-row" data-group="furnitura" data-value="Hettich" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>Hettich</span><span class="opt-desc">Germaniya, 10 yil kafolat, PREMIUM sifat</span></div><span class="price-badge price-qimmat">Qimmat</span></div>
+      <div class="option-row" data-group="furnitura" data-value="GTV" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>GTV</span><span class="opt-desc">Po'lsha, o'rta segment sifati</span></div><span class="price-badge price-ortacha">O'rtacha</span></div>
+      <div class="option-row" data-group="furnitura" data-value="Xitoy" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>Xitoy</span><span class="opt-desc">Kafolat yo'q</span></div><span class="price-badge price-arzon">Arzon</span></div>
+    </div>
+    <div class="izoh-field"><div class="izoh-label">Qo'shimcha izoh</div><input type="text" placeholder="Qo'shimcha fikr..."></div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- BO'YOQ -->
+  <div class="section">
+    <div class="section-header"><span class="section-num">06</span><div class="section-info"><h3>Bo'yoq</h3><p>Kraska</p></div></div>
+    <div class="options-grid">
+      <div class="option-row" data-group="boyoq" data-value="Betek" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>Betek</span><span class="opt-desc">Turkiya, sifatli va rasmiy kafolat bor</span></div><span class="price-badge price-ortacha">O'rtacha</span></div>
+      <div class="option-row" data-group="boyoq" data-value="Genc" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>Genc</span><span class="opt-desc">Turkiya, sifatli va rasmiy kafolat bor</span></div><span class="price-badge price-ortacha">O'rtacha</span></div>
+      <div class="option-row" data-group="boyoq" data-value="Sirca" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>Sirca</span><span class="opt-desc">Italiya, PREMIUM sifat, rasmiy kafolat bor</span></div><span class="price-badge price-qimmat">Qimmat</span></div>
+      <div class="option-row" data-group="boyoq" data-value="Avtomobil bo'yog'i" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>Avtomobil bo'yog'i</span><span class="opt-desc">Juda yuqori sifat va PREMIUM</span></div><span class="price-badge price-qimmat">Qimmat</span></div>
+    </div>
+    <div class="izoh-field"><div class="izoh-label">Qo'shimcha izoh</div><input type="text" placeholder="Qo'shimcha fikr..."></div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- MATERIAL -->
+  <div class="section">
+    <div class="section-header"><span class="section-num">07</span><div class="section-info"><h3>Material</h3><p>Chexol</p></div></div>
+    <div class="options-grid">
+      <div class="option-row" data-group="material" data-value="Turkiya (standart)" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>Turkiya</span><span class="opt-desc">Turkiya mahsuloti, sifatli</span></div><span class="price-badge price-ortacha">O'rtacha</span></div>
+      <div class="option-row" data-group="material" data-value="Xitoy" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>Xitoy</span><span class="opt-desc">Xitoy mahsuloti, sifat o'rtacha</span></div><span class="price-badge price-ortacha">O'rtacha</span></div>
+      <div class="option-row" data-group="material" data-value="Turkiya (premium)" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>Turkiya Premium</span><span class="opt-desc">Premium sifatli va dog'larga chidamli</span></div><span class="price-badge price-qimmat">Qimmat</span></div>
+    </div>
+    <div class="izoh-field"><div class="izoh-label">Qo'shimcha izoh</div><input type="text" placeholder="Qo'shimcha fikr..."></div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- DIZAYN USLUBI -->
+  <div class="section">
+    <div class="section-header"><span class="section-num">08</span><div class="section-info"><h3>Dizayn Uslubi</h3><p>Qanday ko'rinish xohlaysiz?</p></div></div>
+    <div class="options-grid">
+      <div class="option-row" data-group="dizayn" data-value="Klassika" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>🏛 Klassika</span><span class="opt-desc">An'anaviy, nafis bezaklar, boy ko'rinish</span></div></div>
+      <div class="option-row" data-group="dizayn" data-value="Neoklassika" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>🎨 Neoklassika</span><span class="opt-desc">Klassika va zamonaviylikning uyg'unligi</span></div></div>
+      <div class="option-row" data-group="dizayn" data-value="Minimalizm" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>◻️ Minimalizm</span><span class="opt-desc">Sodda, toza chiziqlar, ortiqchasiz</span></div></div>
+      <div class="option-row" data-group="dizayn" data-value="Xaytеk" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>⚙️ Xaytek</span><span class="opt-desc">Zamonaviy, metallик va shisha elementlar</span></div></div>
+      <div class="option-row" data-group="dizayn" data-value="Boshqa uslub" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>✏️ Boshqa uslub</span><span class="opt-desc">O'zimiz muhokama qilamiz</span></div></div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- TEXNIKALAR -->
+  <div class="section">
+    <div class="section-header"><span class="section-num">09</span><div class="section-info"><h3>Texnikalar</h3><p>Mebelda qanday texnikalar bo'ladi?</p></div></div>
+    <div class="options-grid">
+      <div class="option-row" data-group="texnika_muzlatgich" data-value="Muzlatgich" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>❄️ Muzlatgich</span></div></div>
+      <div class="option-row" data-group="texnika_duxovoy" data-value="Duxovoy pech" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>🔥 Duxovoy pech</span></div></div>
+      <div class="option-row" data-group="texnika_idish" data-value="Idish yuvgich" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>🚿 Idish yuvgich</span></div></div>
+      <div class="option-row" data-group="texnika_mikro" data-value="Mikroto'lqin pech" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>📡 Mikroto'lqin pech</span></div></div>
+      <div class="option-row" data-group="texnika_vitrin" data-value="Vitrina (shisha eshik)" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>🪟 Vitrina (shisha eshik)</span></div></div>
+      <div class="option-row" data-group="texnika_yoq" data-value="Texnika yo'q" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>❌ Texnika yo'q</span></div></div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- MEBEL HOLATI -->
+  <div class="section">
+    <div class="section-header"><span class="section-num">10</span><div class="section-info"><h3>Mebel Holati</h3><p>Yangi xonami yoki almashtiriladimi?</p></div></div>
+    <div class="options-grid">
+      <div class="option-row" data-group="holat" data-value="Yangi xona — mebel yo'q" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>🆕 Yangi xona</span><span class="opt-desc">Xonada hali mebel yo'q</span></div></div>
+      <div class="option-row" data-group="holat" data-value="Mavjud mebelni almashtirish" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>🔄 Almashtirish</span><span class="opt-desc">Eski mebel bor, yangisiga almashtirish</span></div></div>
+      <div class="option-row" data-group="holat" data-value="Qo'shimcha mebel" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>➕ Qo'shimcha</span><span class="opt-desc">Mavjud mebelga qo'shimcha qilish</span></div></div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- MUDDAT -->
+  <div class="section">
+    <div class="section-header"><span class="section-num">11</span><div class="section-info"><h3>Qachon Kerak?</h3><p>Mebel qachon tayyor bo'lishi kerak?</p></div></div>
+    <div class="options-grid">
+      <div class="option-row" data-group="muddat" data-value="Imkon qadar tez (1-2 hafta)" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>⚡ Imkon qadar tez</span><span class="opt-desc">1-2 hafta ichida kerak</span></div></div>
+      <div class="option-row" data-group="muddat" data-value="1 oy ichida" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>📅 1 oy ichida</span></div></div>
+      <div class="option-row" data-group="muddat" data-value="2-3 oy ichida" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>🗓 2-3 oy ichida</span></div></div>
+      <div class="option-row" data-group="muddat" data-value="Hali aniq emas" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>🤔 Hali aniq emas</span></div></div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- BUDJET -->
+  <div class="section">
+    <div class="section-header"><span class="section-num">12</span><div class="section-info"><h3>Budjet Darajasi</h3><p>Taxminiy mablag'ingiz</p></div></div>
+    <div class="budget-grid">
+      <div class="option-row budget-row" data-group="budjet" data-value="Tejamkor" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>💰 Tejamkor</span><span class="opt-desc">Arzon materiallar</span></div></div>
+      <div class="option-row budget-row" data-group="budjet" data-value="O'rta" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>⚖️ O'rta</span><span class="opt-desc">Narx-sifat balansi</span></div></div>
+      <div class="option-row budget-row" data-group="budjet" data-value="Premium" onclick="selectOpt(this)"><div class="opt-left"><span class="opt-name"><span class="checkmark"></span>✨ Premium</span><span class="opt-desc">Eng yaxshi materiallar</span></div></div>
+    </div>
+    <div class="budjet-input" style="margin-top:14px;">
+      <div class="izoh-label">Aniq mablag'ingizni kiriting (ixtiyoriy)</div>
+      <input type="text" id="budjet-miqdor" placeholder="Masalan: 15 000 000 so'm">
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- QO'SHIMCHA -->
+  <div class="qoshimcha-section">
+    <div class="izoh-label" style="margin-bottom:8px;">Qo'shimcha fikr yoki talablar</div>
+    <textarea id="qoshimcha" placeholder="Boshqa xohish, savol yoki izohlaringiz..."></textarea>
+  </div>
+
+  <hr class="divider">
+
+  <!-- FAYL/RASM -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">13</span>
+      <div class="section-info">
+        <h3>Loyiha Fayli yoki Rasm</h3>
+        <p>Ixtiyoriy</p>
+      </div>
+    </div>
+    <div style="background:#F0F3F8;border:1.5px dashed rgba(107,127,163,0.4);border-radius:14px;padding:24px;text-align:center;">
+      <div style="font-size:36px;margin-bottom:12px;">📎</div>
+      <p style="font-size:14px;font-weight:600;color:#4A5A7A;margin-bottom:8px;">Rasm yoki fayl yubormoqchimisiz?</p>
+      <p style="font-size:13px;color:#6B7A99;line-height:1.7;margin-bottom:16px;">
+        Tayyor loyiha rasmi, xona surati yoki PDF faylni<br>
+        botimizga yuboring — ustamiz ko'rib chiqadi.
+      </p>
+      <a href="https://t.me/mbi_mebel_bot" target="_blank"
+        style="display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,#4A5A7A,#6B7FA3);color:white;text-decoration:none;padding:12px 24px;border-radius:10px;font-size:13px;font-weight:600;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8l-1.68 7.92c-.12.56-.48.7-.96.44l-2.64-1.96-1.28 1.24c-.14.14-.26.26-.52.26l.18-2.68 4.8-4.32c.2-.18-.04-.28-.32-.1L7.6 14.4l-2.58-.8c-.56-.18-.58-.56.12-.82l10.08-3.88c.46-.18.88.1.72.8l.7-.7z" fill="white"/></svg>
+        @mbi_mebel_bot ga o'tish
+      </a>
+      <p style="font-size:11px;color:#9BA8C0;margin-top:12px;">Fayl bo'lmasa ham bo'ladi — bu ixtiyoriy</p>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- MIJOZ MA'LUMOTLARI -->
+  <div class="client-card">
+    <div class="card-title">Mijoz Ma'lumotlari</div>
+    <div class="client-fields">
+      <div class="client-field"><label>Ism Familiya <span>*</span></label><input type="text" id="mijoz-ism" placeholder="Masalan: Abdullayev Jasur"></div>
+      <div class="client-field"><label>Telefon Raqam <span>*</span></label><input type="tel" id="mijoz-tel" placeholder="+998 90 000 00 00"></div>
+      <div class="client-field"><label>Manzil <span>*</span></label><input type="text" id="mijoz-manzil" placeholder="Shahar, tuman, ko'cha, uy raqami"></div>
+    </div>
+  </div>
+
+  <!-- SUBMIT -->
+  <div class="submit-area">
+    <button class="submit-btn" onclick="submitForm()">✦ Buyurtmani Yuborish</button>
+  </div>
+
+  <!-- CONTACT -->
+  <div class="contact-footer">
+    <div class="contact-item">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6.62 10.79a15.05 15.05 0 006.59 6.59l2.2-2.2a1 1 0 011.11-.27 11.36 11.36 0 003.54.57 1 1 0 011 1V21a1 1 0 01-1 1A17 17 0 013 5a1 1 0 011-1h3.5a1 1 0 011 1 11.36 11.36 0 00.57 3.54 1 1 0 01-.25 1.11l-2.2 2.14z" fill="#6B7FA3"/></svg>
+      <a href="tel:+998911354466">+998 91 135 44 66</a>
+    </div>
+    <div class="contact-item">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6.62 10.79a15.05 15.05 0 006.59 6.59l2.2-2.2a1 1 0 011.11-.27 11.36 11.36 0 003.54.57 1 1 0 011 1V21a1 1 0 01-1 1A17 17 0 013 5a1 1 0 011-1h3.5a1 1 0 011 1 11.36 11.36 0 00.57 3.54 1 1 0 01-.25 1.11l-2.2 2.14z" fill="#6B7FA3"/></svg>
+      <a href="tel:+998951904466">+998 95 190 44 66</a>
+    </div>
+    <div class="contact-item">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8l-1.68 7.92c-.12.56-.48.7-.96.44l-2.64-1.96-1.28 1.24c-.14.14-.26.26-.52.26l.18-2.68 4.8-4.32c.2-.18-.04-.28-.32-.1L7.6 14.4l-2.58-.8c-.56-.18-.58-.56.12-.82l10.08-3.88c.46-.18.88.1.72.8l.7-.7z" fill="#2AABEE"/></svg>
+      <a href="https://t.me/MBI_mebel" target="_blank">@MBI_mebel</a>
+    </div>
+    <div class="contact-item">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><defs><radialGradient id="ig" cx="30%" cy="100%" r="130%"><stop offset="0%" stop-color="#fdf497"/><stop offset="5%" stop-color="#fdf497"/><stop offset="45%" stop-color="#fd5949"/><stop offset="60%" stop-color="#d6249f"/><stop offset="90%" stop-color="#285AEB"/></radialGradient></defs><rect x="2" y="2" width="20" height="20" rx="5" fill="url(#ig)"/><circle cx="12" cy="12" r="5" stroke="white" stroke-width="1.8" fill="none"/><circle cx="17.5" cy="6.5" r="1.2" fill="white"/></svg>
+      <a href="https://instagram.com/mbi_mebel" target="_blank">@mbi_mebel</a>
+    </div>
+  </div>
+
+</div>
+
+<!-- MODAL -->
+<div class="modal-bg" id="modal">
+  <div class="modal">
+    <div class="icon">🎉</div>
+    <h2>Buyurtma yuborildi!</h2>
+    <p>Anketangiz muvaffaqiyatli yuborildi. Tez orada siz bilan bog'lanamiz.</p>
+
+    <div style="margin:20px 0;background:#F0F3F8;border-radius:12px;padding:16px;text-align:left;">
+      <p style="font-size:13px;color:#4A5A7A;font-weight:600;margin-bottom:8px;">📎 Rasm yoki PDF fayl bormi?</p>
+      <p style="font-size:12px;color:#6B7A99;line-height:1.6;">Tayyor loyiha rasmi, xona surati yoki PDF faylni botga yuboring:</p>
+      <a href="https://t.me/mbi_mebel_bot" target="_blank"
+        style="display:block;margin-top:12px;background:linear-gradient(135deg,#4A5A7A,#6B7FA3);color:white;text-decoration:none;padding:11px 20px;border-radius:10px;font-size:13px;font-weight:600;text-align:center;">
+        📤 @mbi_mebel_bot ga o'tish
+      </a>
+    </div>
+
+    <p style="font-size:12px;color:#6B7A99;">Rasm yoki fayl bo'lmasa ham bo'ladi — ustamiz siz bilan bog'lanadi.</p>
+    <button class="modal-close" onclick="closeModal()">Yopish</button>
+  </div>
+</div>
+
+<script>
+  const BOT_TOKEN = '8811277023:AAH_1iBPjb-dlmPDWc1vwMCPQEITzLuWDec';
+  const CHAT_ID   = '1487569442';
+
+  document.getElementById('sana').valueAsDate = new Date();
+
+  const selections = {};
+
+  function selectOpt(row) {
+    const group = row.dataset.group;
+    const already = row.classList.contains('selected');
+    document.querySelectorAll('.option-row[data-group="' + group + '"]').forEach(r => r.classList.remove('selected'));
+    if (!already) {
+      row.classList.add('selected');
+      selections[group] = row.dataset.value;
+    } else {
+      delete selections[group];
+    }
+  }
+
+  // iPhone touch fix
+  document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.option-row').forEach(function(row) {
+      row.addEventListener('touchend', function(e) {
+        e.preventDefault();
+        selectOpt(this);
+      });
+    });
+  });
+
+  async function submitForm() {
+    const ism    = document.getElementById('mijoz-ism');
+    const tel    = document.getElementById('mijoz-tel');
+    const manzil = document.getElementById('mijoz-manzil');
+    [ism, tel, manzil].forEach(f => f.classList.remove('error'));
+
+    let missing = [];
+    if (!ism.value.trim())    { ism.classList.add('error');    missing.push('Ism Familiya'); }
+    if (!tel.value.trim())    { tel.classList.add('error');    missing.push('Telefon raqam'); }
+    if (!manzil.value.trim()) { manzil.classList.add('error'); missing.push('Manzil'); }
+    if (missing.length > 0) { alert('Iltimos quyidagilarni to\'ldiring:\n• ' + missing.join('\n• ')); return; }
+
+    const sana       = document.getElementById('sana').value;
+    const uzunlik    = document.getElementById('uzunlik').value || '—';
+    const chuqurlik  = document.getElementById('chuqurlik').value || '—';
+    const balandlik  = document.getElementById('balandlik').value || '—';
+    const m_uzunlik  = document.getElementById('mebel_uzunlik').value || '—';
+    const m_balandlik= document.getElementById('mebel_balandlik').value || '—';
+    const m_chuqurlik= document.getElementById('mebel_chuqurlik').value || '—';
+    const shakl      = document.querySelector('input[name="shakl"]:checked')?.value || '—';
+    const budjet     = selections['budjet'] || '—';
+    const budjetMiqdor = document.getElementById('budjet-miqdor').value || '—';
+    const qoshimcha  = document.getElementById('qoshimcha').value || '';
+    const texnikalar = ['texnika_muzlatgich','texnika_duxovoy','texnika_idish','texnika_mikro','texnika_vitrin','texnika_yoq']
+      .map(k => selections[k]).filter(Boolean).join(', ') || '—';
+
+    const msg = `🪑 YANGI MEBEL BUYURTMASI
+📅 Sana: ${sana}
+
+👤 MIJOZ
+├ Ism: ${ism.value.trim()}
+├ Tel: ${tel.value.trim()}
+└ Manzil: ${manzil.value.trim()}
+
+🏠 MEBEL TURI: ${selections['tur'] || '—'}
+🎨 DIZAYN: ${selections['dizayn'] || '—'}
+
+📐 XONA O'LCHAMI: ${uzunlik} x ${chuqurlik} x ${balandlik} sm
+📏 MEBEL O'LCHAMI: ${m_uzunlik} x ${m_balandlik} x ${m_chuqurlik} sm
+📐 SHAKL: ${shakl}
+
+🔩 MATERIALLAR
+├ Ko'rpus: ${selections['korpus'] || '—'}
+├ Fasad: ${selections['fasad'] || '—'}
+├ Stoleshnitsa: ${selections['stol'] || '—'}
+├ Furnitura: ${selections['furnitura'] || '—'}
+├ Bo'yoq: ${selections['boyoq'] || '—'}
+└ Material: ${selections['material'] || '—'}
+
+🔧 TEXNIKALAR: ${texnikalar}
+🏷 HOLAT: ${selections['holat'] || '—'}
+⏰ MUDDAT: ${selections['muddat'] || '—'}
+💰 BUDJET: ${budjet}${budjetMiqdor !== '—' ? ' — ' + budjetMiqdor : ''}
+${qoshimcha ? '\n📝 IZOH: ' + qoshimcha : ''}`;
+
+    const btn = document.querySelector('.submit-btn');
+    btn.textContent = '⏳ Yuborilmoqda...';
+    btn.disabled = true;
+
+    try {
+      const res = await fetch('https://api.telegram.org/bot' + BOT_TOKEN + '/sendMessage', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ chat_id: CHAT_ID, text: msg })
+      });
+      const data = await res.json();
+      if (!data.ok) throw new Error('Yuborilmadi');
+      document.getElementById('modal').classList.add('show');
+    } catch(e) {
+      console.error(e);
+      alert('Xatolik yuz berdi. Iltimos qayta urinib ko\'ring.');
+    }
+
+    btn.textContent = '✦ Buyurtmani Yuborish';
+    btn.disabled = false;
+  }
+
+  function closeModal() {
+    document.getElementById('modal').classList.remove('show');
+    document.querySelectorAll('.option-row').forEach(r => r.classList.remove('selected'));
+    Object.keys(selections).forEach(k => delete selections[k]);
+    document.querySelectorAll('input[type="radio"]').forEach(r => r.checked = false);
+    ['mijoz-ism','mijoz-tel','mijoz-manzil','uzunlik','chuqurlik','balandlik',
+     'mebel_uzunlik','mebel_balandlik','mebel_chuqurlik','budjet-miqdor'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.value = '';
+    });
+    document.getElementById('qoshimcha').value = '';
+    document.getElementById('sana').valueAsDate = new Date();
+  }
+</script>
+</body>
+</html>
