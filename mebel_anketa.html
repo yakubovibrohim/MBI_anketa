@@ -604,6 +604,10 @@ ${qoshimcha ? '\n📝 IZOH: ' + qoshimcha : ''}`;
       const data = await res.json();
       if (!data.ok) throw new Error('Yuborilmadi');
       document.getElementById('modal').classList.add('show');
+      await fetch('https://mbi-bot-yw9q.onrender.com/notify', {
+        method: 'POST', headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({phone: tel.value.trim(), name: ism.value.trim(), lang: 'uz'})
+      }).catch(()=>{});
     } catch(e) {
       console.error(e);
       alert('Xatolik yuz berdi. Iltimos qayta urinib ko\'ring.');
